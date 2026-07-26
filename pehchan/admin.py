@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django import forms
 from django.db import models, IntegrityError
@@ -530,7 +531,7 @@ class MoneyDonationAdmin(admin.ModelAdmin, ExportDataMixin):
                 '<a class="button" href="{}" target="_blank">Issue Certificate</a>',
                 url
             )
-        return format_html('<span style="color: #999;">Requires Verification</span>')
+        return mark_safe('<span style=\"color: #999;\">Requires Verification</span>')
     issue_certificate_button.short_description = 'Certificate Actions'
     
     def issue_donor_certificate(self, request, queryset):
@@ -786,14 +787,10 @@ class ContactMessageAdmin(admin.ModelAdmin, ExportDataMixin):
     def action_buttons(self, obj):
         """Display quick action buttons"""
         if obj.status == 'new':
-            return format_html(
-                '<span style="color: #ff5722; font-weight: bold; background: #ffebee; padding: 3px 8px; border-radius: 3px;">⚠ NEW</span>'
-            )
+            return mark_safe('<span style=\"color: #ff5722; font-weight: bold; background: #ffebee; padding: 3px 8px; border-radius: 3px;\">⚠ NEW</span>')
         elif obj.status == 'replied':
-            return format_html(
-                '<span style="color: #4caf50; font-weight: bold; background: #e8f5e9; padding: 3px 8px; border-radius: 3px;">✓ Replied</span>'
-            )
-        return format_html('<span style="color: #9e9e9e; background: #fafafa; padding: 3px 8px; border-radius: 3px;">-</span>')
+            return mark_safe('<span style=\"color: #4caf50; font-weight: bold; background: #e8f5e9; padding: 3px 8px; border-radius: 3px;\">✓ Replied</span>')
+        return mark_safe('<span style=\"color: #9e9e9e; background: #fafafa; padding: 3px 8px; border-radius: 3px;\">-</span>')
     action_buttons.short_description = 'Quick Status'
     
     # Custom actions

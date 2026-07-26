@@ -16,12 +16,12 @@ class Event(models.Model):
     
     name = models.CharField(max_length=200)
     description = models.TextField()
-    event_date = models.DateField()
+    event_date = models.DateField(db_index=True)
     location = models.CharField(max_length=200)
     image = models.ImageField(upload_to='event_images/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
     fundraising_goal = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Target amount to raise for this event")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming', db_index=True)
     created_by = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
@@ -76,7 +76,7 @@ class EventVolunteer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='volunteers')
     contact_number = models.CharField(max_length=10, validators=[phone_regex], default='0000000000')
     joined_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
     attended = models.BooleanField(default=False, help_text="Did the volunteer actually attend the event?")
     
     class Meta:
@@ -104,7 +104,7 @@ class LifetimeVolunteer(models.Model):
     contact_number = models.CharField(max_length=10, validators=[phone_regex], default='0000000000')
     joined_at = models.DateTimeField(auto_now_add=True)
     motivation = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
     approved_at = models.DateTimeField(null=True, blank=True)
     rejected_at = models.DateTimeField(null=True, blank=True)
     reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_lifetime_volunteers')
@@ -121,7 +121,7 @@ class Certificate(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='certificates')
     volunteer = models.ForeignKey(EventVolunteer, on_delete=models.CASCADE, related_name='certificates')
     certificate_number = models.CharField(max_length=50, unique=True, null=True, blank=True)
-    issue_date = models.DateField(default=timezone.now)
+    issue_date = models.DateField(default=timezone.now, db_index=True)
     file = models.FileField(upload_to='certificates/', blank=True, null=True)
     
     class Meta:
@@ -181,8 +181,8 @@ class MaterialDonation(models.Model):
     location = models.CharField(max_length=200)
     contact_number = models.CharField(max_length=10, validators=[phone_regex], default='0000000000')
     message = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     
     class Meta:
         ordering = ['-created_at']
@@ -221,8 +221,8 @@ class MoneyDonation(models.Model):
     upi_id = models.CharField(max_length=100, blank=True)
     contact_number = models.CharField(max_length=10, validators=[phone_regex], default='0000000000')
     receipt_upload = models.FileField(upload_to='receipts/', blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unverified')
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unverified', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     
     class Meta:
         ordering = ['-created_at']
@@ -256,7 +256,7 @@ class DonorCertificate(models.Model):
     )
     
     certificate_number = models.CharField(max_length=50, unique=True, editable=False)
-    issue_date = models.DateField(default=timezone.now)
+    issue_date = models.DateField(default=timezone.now, db_index=True)
     issued_by = models.CharField(max_length=200, default='Pehchan NGO')
     remarks = models.TextField(blank=True, help_text='Additional remarks or appreciation message')
     file = models.FileField(upload_to='donor_certificates/', blank=True, null=True)
@@ -324,7 +324,7 @@ class AnonymousDonation(models.Model):
     wants_receipt = models.BooleanField(default=False)
     message = models.TextField(blank=True, null=True)
     google_form_submitted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     
     class Meta:

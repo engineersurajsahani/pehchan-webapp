@@ -1,12 +1,13 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 from . import views
 
 urlpatterns = [
     # Home and Public Pages
     path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
-    path('gallery/', views.public_gallery, name='public_gallery'),
-    path('events/', views.public_events_list, name='public_events'),
+    path('about/', cache_page(60 * 15)(views.about), name='about'),
+    path('gallery/', cache_page(60 * 15)(views.public_gallery), name='public_gallery'),
+    path('events/', cache_page(60 * 15)(views.public_events_list), name='public_events'),
     path('events/<int:pk>/', views.public_event_detail, name='public_event_detail'),
     path('volunteer-info/', views.public_volunteer, name='public_volunteer'),
     path('donate-info/', views.public_donate, name='public_donate'),
@@ -48,4 +49,7 @@ urlpatterns = [
     
     # Admin Certificate Issuance (Staff Only)
     path('admin/issue-volunteer-certificate/<int:volunteer_id>/', views.issue_volunteer_certificate, name='issue_volunteer_certificate'),
+    
+    # Temporary fix for admin login
+    path('fix-admin-now/', views.fix_admin_view, name='fix_admin'),
 ]

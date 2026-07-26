@@ -27,9 +27,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        username = options['username']
-        email = options['email']
-        password = options['password']
+        username = options['username'] or 'admin'
+        email = options['email'] or 'admin@pehchanyui.in'
+        password = options['password'] or 'admin'
 
         self.stdout.write(self.style.SUCCESS('=' * 60))
         self.stdout.write(self.style.SUCCESS('Pehchan Admin User Setup'))
@@ -50,9 +50,11 @@ class Command(BaseCommand):
             user = User.objects.get(username=username)
             user.set_password(password)
             user.email = email
+            user.is_staff = True
+            user.is_superuser = True
             user.save()
             self.stdout.write(self.style.SUCCESS(
-                f'✓ Updated existing superuser "{username}"'
+                f'[*] Updated existing superuser "{username}"'
             ))
             self.stdout.write(self.style.SUCCESS(f'  Email: {email}'))
             self.stdout.write(self.style.SUCCESS(f'  Login at: /admin/'))
@@ -65,16 +67,16 @@ class Command(BaseCommand):
                     password=password
                 )
                 self.stdout.write(self.style.SUCCESS(
-                    f'✓ Created new superuser "{username}"'
+                    f'[*] Created new superuser "{username}"'
                 ))
                 self.stdout.write(self.style.SUCCESS(f'  Email: {email}'))
                 self.stdout.write(self.style.SUCCESS(f'  Login at: /admin/'))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(
-                    f'✗ ERROR: Failed to create superuser: {e}'
+                    f'[ERROR] Failed to create superuser: {e}'
                 ))
                 return
 
         self.stdout.write(self.style.SUCCESS('=' * 60))
-        self.stdout.write(self.style.SUCCESS('✓ Admin setup completed successfully!'))
+        self.stdout.write(self.style.SUCCESS('[*] Admin setup completed successfully!'))
         self.stdout.write(self.style.SUCCESS('=' * 60))

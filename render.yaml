@@ -6,7 +6,7 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
     releaseCommand: "python manage.py migrate && python manage.py create_admin_user"
-    startCommand: gunicorn pehchan_webapp.wsgi:application
+    startCommand: gunicorn pehchan_webapp.wsgi:application --workers 2 --threads 2 --worker-class gthread
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -39,7 +39,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: WEB_CONCURRENCY
-        value: 4
+        value: 2
 
 databases:
   - name: pehchan-db
