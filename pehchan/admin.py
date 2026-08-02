@@ -189,7 +189,9 @@ class EventVolunteerAdmin(admin.ModelAdmin, ExportDataMixin):
                 messages.success(request, f'Certificate issued successfully for {volunteer.user.username}.')
                 return HttpResponseRedirect(reverse('admin:pehchan_eventvolunteer_changelist'))
             except Exception as e:
-                messages.error(request, f'Error issuing certificate: {str(e)}')
+                import traceback
+                from django.http import HttpResponse
+                return HttpResponse(f"Error during certificate creation: {str(e)}\n\nTraceback:\n{traceback.format_exc()}", content_type="text/plain", status=500)
         
         context = {
             **self.admin_site.each_context(request),
