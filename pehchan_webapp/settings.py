@@ -104,9 +104,8 @@ WSGI_APPLICATION = 'pehchan_webapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if 'RENDER' in os.environ:
-    # Production: Use the PostgreSQL database URL from the environment
-    # We use SUPABASE_URL so Render's internal database doesn't override it
+if not DEBUG:
+    # Production: Use the PostgreSQL database URL from the environment (Supabase)
     db_url = os.environ.get('SUPABASE_URL') or os.environ.get('DATABASE_URL')
     
     # Fix for incorrectly pasted environment variables (e.g., b'postgres://...')
@@ -218,6 +217,8 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+
+EMAIL_TIMEOUT = 10
 
 # Warn if email credentials are not set
 if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
