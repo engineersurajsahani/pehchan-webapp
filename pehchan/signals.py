@@ -46,7 +46,7 @@ def email_volunteer_certificate(sender, instance, created, **kwargs):
         try:
             email.send(fail_silently=True)
         except Exception as e:
-            pass
+            print(f"Certificate email failed: {e}")
 
 
 @receiver(post_save, sender=DonorCertificate)
@@ -66,4 +66,4 @@ def email_donor_certificate(sender, instance, created, **kwargs):
         try:
             email.send(fail_silently=True)
         except Exception as e:
-            pass
+            print(f"Donor certificate email failed: {e}")
