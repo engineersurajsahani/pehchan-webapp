@@ -134,8 +134,8 @@ class Certificate(models.Model):
             prefix = f"PYUI/{year}/V/"
             
             with transaction.atomic():
-                # Lock the table/rows conceptually by getting the max in a safe way
-                last_cert = Certificate.objects.select_for_update().filter(
+                # Get the max sequence in a safe way
+                last_cert = Certificate.objects.filter(
                     certificate_number__startswith=prefix
                 ).order_by('-certificate_number').first()
                 
@@ -274,7 +274,7 @@ class DonorCertificate(models.Model):
             prefix = f"PYUI/{year}/D/"
             
             with transaction.atomic():
-                last_cert = DonorCertificate.objects.select_for_update().filter(
+                last_cert = DonorCertificate.objects.filter(
                     certificate_number__startswith=prefix
                 ).order_by('-certificate_number').first()
                 
