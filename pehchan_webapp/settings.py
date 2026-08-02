@@ -110,10 +110,12 @@ if 'RENDER' in os.environ:
     db_url = os.environ.get('SUPABASE_URL') or os.environ.get('DATABASE_URL')
     
     # Fix for incorrectly pasted environment variables (e.g., b'postgres://...')
-    if db_url and db_url.startswith("b'") and db_url.endswith("'"):
-        db_url = db_url[2:-1]
-    elif db_url and db_url.startswith('b"') and db_url.endswith('"'):
-        db_url = db_url[2:-1]
+    if db_url:
+        db_url = db_url.strip()
+        if db_url.startswith("b'") or db_url.startswith('b"'):
+            db_url = db_url[2:]
+        if db_url.endswith("'") or db_url.endswith('"'):
+            db_url = db_url[:-1]
     DATABASES = {
         'default': dj_database_url.parse(
             db_url,
