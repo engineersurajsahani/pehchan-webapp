@@ -54,7 +54,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label>Certificate Number:</label>
-                    <p class="form-control-static"><em>Will be auto-generated automatically (e.g., PYUI/{{ now|date:"Y" }}/...)</em></p>
+                    <p class="form-control-static"><em>Will be auto-generated automatically (e.g., PYUI/{% now "Y" %}/...)</em></p>
                 </div>
                 <div class="form-group">
                     <label for="certificate_file">Certificate File (Optional):</label>

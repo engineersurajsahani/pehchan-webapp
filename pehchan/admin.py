@@ -192,6 +192,7 @@ class EventVolunteerAdmin(admin.ModelAdmin, ExportDataMixin):
                 messages.error(request, f'Error issuing certificate: {str(e)}')
         
         context = {
+            **self.admin_site.each_context(request),
             'volunteer': volunteer,
             'certificate_type': 'Volunteer',
             'title': 'Issue Volunteer Certificate',
@@ -376,8 +377,9 @@ class MaterialDonationAdmin(admin.ModelAdmin, ExportDataMixin):
                 messages.error(request, f'Error issuing certificate: {str(e)}')
         
         context = {
+            **self.admin_site.each_context(request),
             'donation': donation,
-            'certificate_type': 'Donor (Material)',
+            'certificate_type': 'Material Donation',
             'title': 'Issue Material Donation Certificate',
         }
         
@@ -514,6 +516,7 @@ class MoneyDonationAdmin(admin.ModelAdmin, ExportDataMixin):
                 messages.error(request, f'Error issuing certificate: {str(e)}')
         
         context = {
+            **self.admin_site.each_context(request),
             'donation': donation,
             'certificate_type': 'Donor (Money)',
             'title': 'Issue Money Donation Certificate',
