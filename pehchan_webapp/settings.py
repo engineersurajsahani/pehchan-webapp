@@ -115,13 +115,22 @@ if not DEBUG:
             db_url = db_url[2:]
         if db_url.endswith("'") or db_url.endswith('"'):
             db_url = db_url[:-1]
-    DATABASES = {
-        'default': dj_database_url.parse(
-            db_url,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
+            
+        DATABASES = {
+            'default': dj_database_url.parse(
+                db_url,
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+    else:
+        # Fallback to SQLite if no DATABASE_URL is provided
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 else:
     # Development: Strictly use a local SQLite database named db_dev.sqlite3
     DATABASES = {
