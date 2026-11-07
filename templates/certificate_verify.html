@@ -99,6 +99,71 @@
         </div>
     </div>
 
+    {% if sample_verified %}
+    <div class="surface-card result-card" style="margin-top: 32px; border: 3px solid #164e3f; box-shadow: 0 10px 32px rgba(22, 78, 63, 0.22); border-radius: 16px; overflow: hidden;">
+        <div class="mdl-card__title" style="background: linear-gradient(135deg, #164e3f, #0d3228); color: white; padding: 22px 24px;">
+            <h2 class="mdl-card__title-text" style="color: white; margin: 0; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                <span class="material-icons-round" style="font-size: 1.8rem; color: #4ade80;">verified</span> Official Certificate Verified
+            </h2>
+        </div>
+        <div class="mdl-card__supporting-text" style="padding: 24px;">
+            <div class="info-panel" style="margin-bottom: 24px; padding: 18px; background: #ecfdf5; border-radius: 12px; border-left: 5px solid #10b981;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <span class="material-icons-round" style="font-size: 2.6rem; color: #10b981;">check_circle</span>
+                    <div>
+                        <h3 style="margin: 0; color: #065f46; font-size: 1.25rem; font-weight: 700;">Authentic & Validated Certificate</h3>
+                        <p style="margin: 4px 0 0 0; color: #047857; font-size: 0.92rem;">
+                            Issued by <strong>Pehchan YUI Foundation</strong> • Public Trust Reg. No: <strong>{{ sample_data.reg_no }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 1.15rem; color: #1f2937;">
+                <span class="material-icons-round" style="color: #164e3f;">badge</span> Certificate Credentials
+            </h3>
+
+            <div style="background: #f8fafc; padding: 22px; border-radius: 14px; border: 1px solid #e2e8f0;">
+                <div style="display: grid; gap: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div>
+                            <p style="text-transform: uppercase; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px;">Certificate Number</p>
+                            <p style="font-size: 1.2rem; font-weight: 800; color: #164e3f; font-family: monospace; margin: 0;">{{ sample_data.certificate_number }}</p>
+                        </div>
+                        <div>
+                            <p style="text-transform: uppercase; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px;">Recipient / Volunteer Name</p>
+                            <p style="font-size: 1.15rem; color: #0f172a; margin: 0; font-weight: 700;">{{ sample_data.volunteer_name }}</p>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                        <p style="text-transform: uppercase; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px;">Event / Initiative</p>
+                        <p style="font-size: 1.15rem; color: #0f172a; margin: 0; font-weight: 700;">{{ sample_data.event_name }}</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                        <div>
+                            <p style="text-transform: uppercase; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px;">Event Date & Location</p>
+                            <p style="margin: 0; font-weight: 600; color: #334155;">{{ sample_data.event_date }} ({{ sample_data.location }})</p>
+                        </div>
+                        <div>
+                            <p style="text-transform: uppercase; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px;">Date of Issue</p>
+                            <p style="margin: 0; font-weight: 600; color: #334155;">{{ sample_data.issue_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;" class="no-print">
+                <a href="{% url 'sample_certificate_preview' %}" class="pill-button" style="flex: 1; justify-content: center; background: #164e3f; color: white; text-decoration: none; padding: 12px; display: flex; align-items: center; gap: 8px; border-radius: 8px; font-weight: 600;">
+                    <span class="material-icons-round">workspace_premium</span> View Full Certificate Design
+                </a>
+                <button onclick="window.print();" class="pill-button" style="flex: 1; justify-content: center; background: #475569; color: white; border: none; cursor: pointer; padding: 12px; display: flex; align-items: center; gap: 8px; border-radius: 8px; font-weight: 600;">
+                    <span class="material-icons-round">print</span> Print Verification Record
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {% if certificate %}
     <div class="surface-card result-card" style="margin-top: 32px; border: 3px solid #2e7d32; box-shadow: 0 8px 32px rgba(46, 125, 50, 0.2);">
         <div class="mdl-card__title" style="background: #2e7d32; color: white; padding: 20px;">

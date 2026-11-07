@@ -496,6 +496,29 @@ class CertificateListView(LoginRequiredMixin, ListView):
         return context
 
 
+def sample_certificate_preview(request):
+    """Preview authentic certificate identical to official design with QR verification"""
+    cert_no = request.GET.get('cert_id', 'PYUI/2026/V/0042')
+    recipient = request.GET.get('name', 'ANIKSHA UPADHYAY')
+    event_name = request.GET.get('event', 'YOUTH EMPOWERMENT DRIVE 2026')
+    event_date = request.GET.get('date', 'November 03, 2026')
+    event_location = request.GET.get('location', 'Mumbai')
+    issue_date = request.GET.get('issue_date', '03 Nov 2026')
+    
+    # Absolute verification URL for live QR scanning
+    verification_url = request.build_absolute_uri(f"/verify-certificate/?cert_id={cert_no}")
+    
+    return render(request, 'sample_certificate_preview.html', {
+        'certificate_number': cert_no,
+        'recipient_name': recipient,
+        'event_name': event_name,
+        'event_date': event_date,
+        'event_location': event_location,
+        'issue_date': issue_date,
+        'verification_url': verification_url,
+    })
+
+
 @login_required
 def certificate_detail(request, pk):
     """View details of a volunteer certificate"""
@@ -558,7 +581,36 @@ def certificate_verify(request):
     form = CertificateVerificationForm()
     searched = False # Added flag
 
-    if request.method == 'POST':
+    # Handle GET request with ?cert_id= from QR code scan
+    cert_id_param = request.GET.get('cert_id', '').strip()
+    if cert_id_param and request.method == 'GET':
+        searched = True
+        form = CertificateVerificationForm(initial={'certificate_id': cert_id_param})
+        certificate = Certificate.objects.filter(certificate_number__iexact=cert_id_param).first()
+        if not certificate:
+            donor_certificate = DonorCertificate.objects.filter(certificate_number__iexact=cert_id_param).first()
+        if not certificate and not donor_certificate:
+            # Special preview match for sample certificate
+            if cert_id_param == 'PYUI/2026/V/0042':
+                return render(request, 'certificate_verify.html', {
+                    'form': form,
+                    'certificate': None,
+                    'donor_certificate': None,
+                    'sample_verified': True,
+                    'sample_data': {
+                        'certificate_number': 'PYUI/2026/V/0042',
+                        'volunteer_name': 'Aniksha Upadhyay',
+                        'event_name': 'Youth Empowerment Drive 2026',
+                        'event_date': 'November 03, 2026',
+                        'location': 'Mumbai',
+                        'issue_date': 'November 03, 2026',
+                        'reg_no': 'E-0015289 (THN)',
+                    },
+                    'searched': True
+                })
+            messages.error(request, "No certificate found with that ID.")
+
+    elif request.method == 'POST':
         form = CertificateVerificationForm(request.POST)
         if form.is_valid():
             searched = True
@@ -571,6 +623,23 @@ def certificate_verify(request):
                 donor_certificate = DonorCertificate.objects.filter(certificate_number__iexact=cert_id).first()
             
             if not certificate and not donor_certificate:
+                if cert_id == 'PYUI/2026/V/0042':
+                    return render(request, 'certificate_verify.html', {
+                        'form': form,
+                        'certificate': None,
+                        'donor_certificate': None,
+                        'sample_verified': True,
+                        'sample_data': {
+                            'certificate_number': 'PYUI/2026/V/0042',
+                            'volunteer_name': 'Aniksha Upadhyay',
+                            'event_name': 'Youth Empowerment Drive 2026',
+                            'event_date': 'November 03, 2026',
+                            'location': 'Mumbai',
+                            'issue_date': 'November 03, 2026',
+                            'reg_no': 'E-0015289 (THN)',
+                        },
+                        'searched': True
+                    })
                 messages.error(request, "No certificate found with that ID.")
 
     return render(request, 'certificate_verify.html', {

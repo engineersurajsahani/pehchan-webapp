@@ -1,0 +1,694 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Certificate Preview - Pehchan YUI Foundation{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts matched with image -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* Page Layout */
+.cert-preview-page {
+    padding: 24px 16px 60px;
+    background: #eef2f6;
+    min-height: calc(100vh - 120px);
+}
+
+.cert-controls-bar {
+    max-width: 1040px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: #ffffff;
+    padding: 14px 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+}
+
+.cert-controls-left h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #1e293b;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cert-controls-left p {
+    margin: 4px 0 0 0;
+    font-size: 0.86rem;
+    color: #64748b;
+}
+
+.cert-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.cert-action-btn--primary {
+    background: linear-gradient(135deg, #134e3f, #0a3328);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(19, 78, 63, 0.25);
+}
+
+.cert-action-btn--primary:hover {
+    background: linear-gradient(135deg, #0a3328, #051d16);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.cert-action-btn--outline {
+    background: transparent;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.cert-action-btn--outline:hover {
+    background: #f1f5f9;
+}
+
+/* Certificate Canvas Container */
+.cert-canvas-wrapper {
+    max-width: 1040px;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Certificate Outer Frame */
+.certificate-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 585px;
+    background-color: #fcfcf8;
+    background-image: 
+        radial-gradient(#e4e2d6 0.65px, transparent 0.65px),
+        radial-gradient(#e4e2d6 0.65px, #fcfcf8 0.65px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    box-sizing: border-box;
+    font-family: 'Playfair Display', serif;
+    color: #1a1a1a;
+    overflow: hidden;
+}
+
+/* 
+  Global Certificate Outer Borders:
+  Spans full width from left margin (24px) all the way to right margin (24px)
+*/
+.cert-full-outer-border {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    right: 24px;
+    bottom: 20px;
+    border: 1.5px solid #174d3d;
+    pointer-events: none;
+    box-sizing: border-box;
+    z-index: 1; /* Sits underneath the vertical ribbon */
+}
+
+.cert-full-inner-border {
+    position: absolute;
+    top: 25px;
+    left: 29px;
+    right: 29px;
+    bottom: 25px;
+    border: 1px solid #b8924b;
+    pointer-events: none;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* 4 Ornamental Corners at certificate edges */
+.corner-ornament {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #b8924b;
+    pointer-events: none;
+    z-index: 2;
+}
+.corner-tl { top: 14px; left: 18px; border-right: none; border-bottom: none; border-top-left-radius: 6px; }
+.corner-tr { top: 14px; right: 18px; border-left: none; border-bottom: none; border-top-right-radius: 6px; }
+.corner-bl { bottom: 14px; left: 18px; border-right: none; border-top: none; border-bottom-left-radius: 6px; }
+.corner-br { bottom: 14px; right: 18px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
+
+/* 
+  Vertical Royal Indigo-Purple Ribbon:
+  Positioned on the right side, extends from very top (0) to bottom (0),
+  Exactly 140px wide (~13.7% width), exactly matching the original design
+*/
+.cert-right-ribbon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 70px; /* Positioned near right edge, with cream margin & border on its right */
+    width: 142px;
+    background: linear-gradient(180deg, #1b204e 0%, #13173e 50%, #0d102e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 38px 8px 30px 8px;
+    box-sizing: border-box;
+    box-shadow: 0 0 16px rgba(13, 16, 46, 0.4);
+    border-left: 2px solid #dfb967;
+    border-right: 2px solid #dfb967;
+    z-index: 5; /* Passes over the top/bottom borders */
+}
+
+/* Subtle gold pin-lines inside the ribbon */
+.cert-right-ribbon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 3px;
+    width: 1px;
+    height: 100%;
+    background: rgba(223, 185, 103, 0.45);
+}
+
+.cert-right-ribbon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 3px;
+    width: 1px;
+    height: 100%;
+    background: rgba(223, 185, 103, 0.45);
+}
+
+/* Right Ribbon Top Logo */
+.ribbon-top-block {
+    text-align: center;
+    z-index: 6;
+    margin-top: 10px;
+}
+
+.ribbon-circle-logo-wrapper {
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 2px solid #dfb967;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 12px rgba(223, 185, 103, 0.3);
+    background: #02012d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ribbon-circle-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Official 3D Embossed Gold Coin "THANK YOU" */
+.ribbon-golden-coin-container {
+    width: 116px;
+    height: 116px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 6;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));
+}
+
+.ribbon-gold-coin-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Ribbon Bottom Foundation Label */
+.ribbon-bottom-block {
+    text-align: center;
+    z-index: 6;
+}
+
+.ribbon-star-sparkle {
+    color: #dfbf77;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.ribbon-bottom-text {
+    color: #ede7da;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    line-height: 1.35;
+    text-transform: uppercase;
+}
+
+/* 
+  Main Certificate Body Content:
+  Occupies space with right margin to clear the ribbon comfortably
+*/
+.cert-body-content {
+    position: relative;
+    width: calc(100% - 220px);
+    height: 100%;
+    padding: 34px 44px 26px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    z-index: 3;
+}
+
+/* Top Header & Official Transparent Emblem */
+.cert-header {
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.cert-top-logo {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    margin: 0 auto 5px auto;
+    display: block;
+    background: transparent !important;
+    border: none !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+}
+
+.cert-foundation-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.15rem;
+    font-weight: 700;
+    color: #175440;
+    letter-spacing: 2px;
+    margin: 0;
+    line-height: 1.15;
+    text-transform: uppercase;
+}
+
+.cert-foundation-reg {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #2b332f;
+    font-weight: 500;
+    margin: 4px 0 0 0;
+    letter-spacing: 0.2px;
+}
+
+/* Title Section: CERTIFICATE OF APPRECIATION */
+.cert-title-section {
+    text-align: center;
+    position: relative;
+    z-index: 3;
+    margin: 8px 0 5px 0;
+}
+
+.cert-main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.3rem;
+    font-weight: 400;
+    letter-spacing: 4.5px;
+    color: #141816;
+    margin: 0;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.cert-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.18rem;
+    font-weight: 400;
+    letter-spacing: 4.5px;
+    color: #212b26;
+    margin: 6px 0 0 0;
+    text-transform: uppercase;
+}
+
+/* Recipient and Awarded Text */
+.cert-recipient-section {
+    text-align: center;
+    position: relative;
+    z-index: 3;
+    margin: 6px 0;
+}
+
+.cert-awarded-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #262c28;
+    margin: 0 0 8px 0;
+}
+
+.cert-recipient-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #111413;
+    letter-spacing: 2px;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.cert-citation-wrapper {
+    max-width: 660px;
+    margin: 0 auto;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #212624;
+}
+
+.cert-citation-intro {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.cert-event-name {
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: #0b1410;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: block;
+    margin: 3px 0 1px 0;
+}
+
+.cert-event-venue {
+    font-size: 0.88rem;
+    color: #2d3632;
+    font-weight: 500;
+    display: block;
+}
+
+/* Bottom Footer (Cert No / QR / Signature) */
+.cert-footer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 3;
+    padding: 6px 4px 2px 4px;
+    margin-top: auto;
+}
+
+.cert-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Verification QR Code */
+.cert-qr-box {
+    background: #ffffff;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #d4af37;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cert-qr-img {
+    width: 62px;
+    height: 62px;
+    display: block;
+}
+
+.cert-qr-caption {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #175440;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+}
+
+.cert-meta-info {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: #222926;
+}
+
+.cert-meta-number {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #111413;
+}
+
+.cert-footer-right {
+    text-align: center;
+    min-width: 170px;
+}
+
+.cert-cursive-signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.3rem;
+    color: #13241d;
+    margin: 0;
+    line-height: 1;
+    transform: rotate(-3deg);
+}
+
+.cert-sign-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #161c19;
+    margin: 4px 0 0 0;
+}
+
+.cert-sign-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #4b5852;
+    font-weight: 500;
+    margin: 1px 0 0 0;
+}
+
+/* Print Friendly Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .cert-controls-bar {
+        display: none !important;
+    }
+    .cert-preview-page {
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    .cert-canvas-wrapper,
+    .cert-canvas-wrapper * {
+        visibility: visible;
+    }
+    .cert-canvas-wrapper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+    .certificate-frame {
+        width: 100% !important;
+        height: 100% !important;
+        aspect-ratio: auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .certificate-frame {
+        aspect-ratio: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    .cert-body-content {
+        width: 100%;
+        padding: 24px 16px;
+    }
+    .cert-right-ribbon {
+        position: relative;
+        right: 0;
+        width: 100%;
+        flex-direction: row;
+        border-left: none;
+        border-right: none;
+        border-top: 2px solid #dfb967;
+        border-bottom: 2px solid #dfb967;
+        padding: 16px;
+    }
+    .cert-foundation-name {
+        font-size: 1.4rem;
+    }
+    .cert-main-title {
+        font-size: 1.6rem;
+    }
+    .cert-recipient-name {
+        font-size: 1.6rem;
+    }
+    .cert-footer-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cert-preview-page">
+    
+    <!-- Controls Bar -->
+    <div class="cert-controls-bar">
+        <div class="cert-controls-left">
+            <h2>
+                <span class="material-icons-round" style="color: #175440;">verified</span>
+                Pehchan YUI Foundation - Official Certificate
+            </h2>
+            <p>Accurate geometry matching original certificate with full-width ribbon & border overlay</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button onclick="window.print()" class="cert-action-btn cert-action-btn--primary">
+                <span class="material-icons-round">print</span> Print / Save as PDF
+            </button>
+            <a href="{% url 'public_certificate_verify' %}?cert_id={{ certificate_number }}" target="_blank" class="cert-action-btn cert-action-btn--outline">
+                <span class="material-icons-round">qr_code_scanner</span> Test QR Verify
+            </a>
+        </div>
+    </div>
+
+    <!-- Certificate Canvas -->
+    <div class="cert-canvas-wrapper" id="certificateCanvas">
+        <div class="certificate-frame">
+            
+            <!-- Global Certificate Double Border & Corners spanning full width -->
+            <div class="cert-full-outer-border"></div>
+            <div class="cert-full-inner-border"></div>
+            <div class="corner-ornament corner-tl"></div>
+            <div class="corner-ornament corner-tr"></div>
+            <div class="corner-ornament corner-bl"></div>
+            <div class="corner-ornament corner-br"></div>
+
+            <!-- Vertical Royal Navy-Purple Ribbon (Full height top-to-bottom, proper width) -->
+            <div class="cert-right-ribbon">
+                
+                <!-- Circular Pehchan Round Badge Logo -->
+                <div class="ribbon-top-block">
+                    <div class="ribbon-circle-logo-wrapper">
+                        <img src="{% static 'images/logos/pehchan_round_blue.png' %}" alt="Pehchan Round Badge" class="ribbon-circle-logo">
+                    </div>
+                </div>
+
+                <!-- Real 3D Metallic Embossed Gold Coin "THANK YOU" -->
+                <div class="ribbon-golden-coin-container">
+                    <img src="{% static 'images/gold_coin_thank_you.png' %}" alt="Thank You Gold Coin" class="ribbon-gold-coin-img">
+                </div>
+
+                <!-- Ribbon Bottom Tagline -->
+                <div class="ribbon-bottom-block">
+                    <span class="ribbon-star-sparkle">✦</span>
+                    <div class="ribbon-bottom-text">
+                        PEHCHAN YUI<br>FOUNDATION
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Certificate Body Content -->
+            <div class="cert-body-content">
+
+                <!-- Top Header: Official Transparent Emblem -->
+                <div class="cert-header">
+                    <img src="{% static 'images/logos/pehchan_official_emblem.png' %}" alt="Pehchan Official Emblem" class="cert-top-logo">
+                    <h1 class="cert-foundation-name">PEHCHAN YUI FOUNDATION</h1>
+                    <p class="cert-foundation-reg">(Registered Public Trust Reg. No: E-0015289 (THN))</p>
+                </div>
+
+                <!-- Certificate Title -->
+                <div class="cert-title-section">
+                    <h2 class="cert-main-title">CERTIFICATE</h2>
+                    <h3 class="cert-subtitle">OF APPRECIATION</h3>
+                </div>
+
+                <!-- Recipient & Event Participation Citation -->
+                <div class="cert-recipient-section">
+                    <p class="cert-awarded-text">This certificate is proudly awarded to</p>
+                    <h2 class="cert-recipient-name">{{ recipient_name }}</h2>
+                    <div class="cert-citation-wrapper">
+                        <span class="cert-citation-intro">in recognition of dedicated and valuable voluntary service in the initiative/event</span>
+                        <span class="cert-event-name">“{{ event_name }}”</span>
+                        <span class="cert-event-venue">held on {{ event_date }}, in {{ event_location }}.</span>
+                    </div>
+                </div>
+
+                <!-- Bottom Footer (Cert No / QR / Signature) -->
+                <div class="cert-footer-section">
+                    <div class="cert-footer-left">
+                        <!-- Dynamic Verification QR Code -->
+                        <div class="cert-qr-box">
+                            <img src="{% static 'images/sample_cert_qr.png' %}" 
+                                 alt="Verify Certificate QR" 
+                                 class="cert-qr-img" 
+                                 onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ verification_url|urlencode }}';" />
+                            <span class="cert-qr-caption">Scan to Verify</span>
+                        </div>
+                        <div class="cert-meta-info">
+                            <div>Certificate No: <span class="cert-meta-number">{{ certificate_number }}</span></div>
+                            <div>Date of Issue: {{ issue_date }}</div>
+                        </div>
+                    </div>
+
+                    <div class="cert-footer-right">
+                        <p class="cert-cursive-signature">Aniksha Upadhyay</p>
+                        <p class="cert-sign-name">Aniksha Upadhyay</p>
+                        <p class="cert-sign-title">Founder</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

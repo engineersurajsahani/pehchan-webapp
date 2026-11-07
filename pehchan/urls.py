@@ -12,6 +12,7 @@ urlpatterns = [
     path('volunteer-info/', views.public_volunteer, name='public_volunteer'),
     path('donate-info/', views.public_donate, name='public_donate'),
     path('verify-certificate/', views.certificate_verify, name='public_certificate_verify'),
+    path('sample-certificate/', views.sample_certificate_preview, name='sample_certificate_preview'),
     
     # Authentication
     path('signup/', views.signup_view, name='signup'),
