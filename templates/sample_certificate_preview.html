@@ -4,16 +4,16 @@
 {% block title %}Certificate Preview - Pehchan YUI Foundation{% endblock %}
 
 {% block extra_css %}
-<!-- Google Fonts matched with image -->
+<!-- Unified Typography: Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 /* Page Layout */
 .cert-preview-page {
     padding: 24px 16px 60px;
-    background: #eef2f6;
+    background: #edf1f5;
     min-height: calc(100vh - 120px);
 }
 
@@ -112,10 +112,7 @@
     overflow: hidden;
 }
 
-/* 
-  Global Certificate Outer Borders:
-  Spans full width from left margin (24px) all the way to right margin (24px)
-*/
+/* Outer Border Enclosing Certificate (Underneath Ribbon) */
 .cert-full-outer-border {
     position: absolute;
     top: 20px;
@@ -125,7 +122,7 @@
     border: 1.5px solid #174d3d;
     pointer-events: none;
     box-sizing: border-box;
-    z-index: 1; /* Sits underneath the vertical ribbon */
+    z-index: 1;
 }
 
 .cert-full-inner-border {
@@ -140,7 +137,7 @@
     z-index: 1;
 }
 
-/* 4 Ornamental Corners at certificate edges */
+/* Ornamental Corners */
 .corner-ornament {
     position: absolute;
     width: 22px;
@@ -154,16 +151,12 @@
 .corner-bl { bottom: 14px; left: 18px; border-right: none; border-top: none; border-bottom-left-radius: 6px; }
 .corner-br { bottom: 14px; right: 18px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
 
-/* 
-  Vertical Royal Indigo-Purple Ribbon:
-  Positioned on the right side, extends from very top (0) to bottom (0),
-  Exactly 140px wide (~13.7% width), exactly matching the original design
-*/
+/* Vertical Royal Navy-Purple Ribbon */
 .cert-right-ribbon {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 70px; /* Positioned near right edge, with cream margin & border on its right */
+    right: 70px;
     width: 142px;
     background: linear-gradient(180deg, #1b204e 0%, #13173e 50%, #0d102e 100%);
     display: flex;
@@ -175,10 +168,9 @@
     box-shadow: 0 0 16px rgba(13, 16, 46, 0.4);
     border-left: 2px solid #dfb967;
     border-right: 2px solid #dfb967;
-    z-index: 5; /* Passes over the top/bottom borders */
+    z-index: 5;
 }
 
-/* Subtle gold pin-lines inside the ribbon */
 .cert-right-ribbon::before {
     content: '';
     position: absolute;
@@ -199,7 +191,7 @@
     background: rgba(223, 185, 103, 0.45);
 }
 
-/* Right Ribbon Top Logo */
+/* Ribbon Top Circular Logo */
 .ribbon-top-block {
     text-align: center;
     z-index: 6;
@@ -227,7 +219,7 @@
     display: block;
 }
 
-/* Official 3D Embossed Gold Coin "THANK YOU" */
+/* Ribbon 3D Gold Coin */
 .ribbon-golden-coin-container {
     width: 116px;
     height: 116px;
@@ -246,7 +238,7 @@
     display: block;
 }
 
-/* Ribbon Bottom Foundation Label */
+/* Ribbon Bottom Tagline */
 .ribbon-bottom-block {
     text-align: center;
     z-index: 6;
@@ -269,10 +261,7 @@
     text-transform: uppercase;
 }
 
-/* 
-  Main Certificate Body Content:
-  Occupies space with right margin to clear the ribbon comfortably
-*/
+/* Main Body Content */
 .cert-body-content {
     position: relative;
     width: calc(100% - 220px);
@@ -285,7 +274,7 @@
     z-index: 3;
 }
 
-/* Top Header & Official Transparent Emblem */
+/* Top Header */
 .cert-header {
     text-align: center;
     position: relative;
@@ -323,7 +312,7 @@
     letter-spacing: 0.2px;
 }
 
-/* Title Section: CERTIFICATE OF APPRECIATION */
+/* Certificate Title Section: Unified Serif Classic Styling */
 .cert-title-section {
     text-align: center;
     position: relative;
@@ -335,7 +324,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 2.3rem;
     font-weight: 400;
-    letter-spacing: 4.5px;
+    letter-spacing: 5px;
     color: #141816;
     margin: 0;
     line-height: 1;
@@ -343,16 +332,16 @@
 }
 
 .cert-subtitle {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.18rem;
-    font-weight: 400;
-    letter-spacing: 4.5px;
-    color: #212b26;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: 5.5px;
+    color: #26332b;
     margin: 6px 0 0 0;
     text-transform: uppercase;
 }
 
-/* Recipient and Awarded Text */
+/* Recipient and Citation */
 .cert-recipient-section {
     text-align: center;
     position: relative;
@@ -409,7 +398,7 @@
     display: block;
 }
 
-/* Bottom Footer (Cert No / QR / Signature) */
+/* Bottom Footer */
 .cert-footer-section {
     display: flex;
     justify-content: space-between;
@@ -426,7 +415,7 @@
     gap: 14px;
 }
 
-/* Verification QR Code */
+/* Dynamic QR Verification */
 .cert-qr-box {
     background: #ffffff;
     padding: 5px;
@@ -585,7 +574,7 @@
                 <span class="material-icons-round" style="color: #175440;">verified</span>
                 Pehchan YUI Foundation - Official Certificate
             </h2>
-            <p>Accurate geometry matching original certificate with full-width ribbon & border overlay</p>
+            <p>Unified typography & authentic styling with 3D Gold Coin and live QR Verification</p>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
             <button onclick="window.print()" class="cert-action-btn cert-action-btn--primary">
@@ -601,7 +590,7 @@
     <div class="cert-canvas-wrapper" id="certificateCanvas">
         <div class="certificate-frame">
             
-            <!-- Global Certificate Double Border & Corners spanning full width -->
+            <!-- Global Double Border spanning full width underneath ribbon -->
             <div class="cert-full-outer-border"></div>
             <div class="cert-full-inner-border"></div>
             <div class="corner-ornament corner-tl"></div>
@@ -609,7 +598,7 @@
             <div class="corner-ornament corner-bl"></div>
             <div class="corner-ornament corner-br"></div>
 
-            <!-- Vertical Royal Navy-Purple Ribbon (Full height top-to-bottom, proper width) -->
+            <!-- Vertical Royal Navy-Purple Ribbon -->
             <div class="cert-right-ribbon">
                 
                 <!-- Circular Pehchan Round Badge Logo -->
