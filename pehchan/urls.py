@@ -12,6 +12,7 @@ urlpatterns = [
     path('volunteer-info/', views.public_volunteer, name='public_volunteer'),
     path('donate-info/', views.public_donate, name='public_donate'),
     path('verify-certificate/', views.certificate_verify, name='public_certificate_verify'),
+    path('sample-certificate/', views.sample_certificate_preview, name='sample_certificate_preview'),
     
     # Authentication
     path('signup/', views.signup_view, name='signup'),
@@ -49,7 +50,4 @@ urlpatterns = [
     
     # Admin Certificate Issuance (Staff Only)
     path('admin/issue-volunteer-certificate/<int:volunteer_id>/', views.issue_volunteer_certificate, name='issue_volunteer_certificate'),
-    
-    # Temporary fix for admin login
-    path('fix-admin-now/', views.fix_admin_view, name='fix_admin'),
 ]

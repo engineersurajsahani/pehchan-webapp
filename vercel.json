@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "pehchan_webapp/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "pehchan_webapp/wsgi.py"
+    }
+  ],
+  "functions": {
+    "pehchan_webapp/wsgi.py": {
+      "excludeFiles": "{media/**,staticfiles/**,scratch/**,*.md,*.log,*.sqlite3}"
+    }
+  }
+}

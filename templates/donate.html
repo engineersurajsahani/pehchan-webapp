@@ -239,13 +239,16 @@
         }
 
         /* Center Navbar Content */
-        .nav-container {
-            justify-content: center !important;
-        }
+        /* Center Navbar Content on Desktop */
+        @media (min-width: 769px) {
+            .nav-container {
+                justify-content: center !important;
+            }
 
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 80px !important;
+            .nav-links {
+                margin-left: 0 !important;
+                margin-right: 80px !important;
+            }
         }
 
         /* Fix Page Title for Donate Page - Compact & Centered */
@@ -282,8 +285,8 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
                 {% else %}
-                <a class="mdl-navigation__link" href="{% url 'login' %}">Login</a>
-                <a class="mdl-navigation__link" href="{% url 'signup' %}">Sign Up</a>
+                <li><a href="{% url 'login' %}">LOGIN</a></li>
+                <li><a href="{% url 'signup' %}">SIGN UP</a></li>
                 {% endif %}
             </ul>
             <a href="{% if user.is_authenticated %}{% url 'money_donation' %}{% else %}{% url 'public_donate' %}#support{% endif %}"
@@ -302,7 +305,7 @@
         <div class="hero-content">
             <img src="{% static 'images/PEHCHANlogo.png' %}" class="hero-logo" alt="Pehchan Logo">
             <h1 class="hero-title-green">Pehchan</h1>
-            <h2 class="hero-title-blue">Your Unique Identity</h2>
+            <h2 class="hero-title-blue">YUI Foundation</h2>
             <div class="hero-buttons">
                 <a href="{% if user.is_authenticated %}{% url 'lifetime_volunteer' %}{% else %}{% url 'public_volunteer' %}{% endif %}"
                     class="btn-join">JOIN US</a>
@@ -372,29 +375,34 @@
                     <p style="color: #666; margin-bottom: 30px;">Support our cause without creating an account. Your
                         contribution makes a difference!</p>
 
-                        <div class="form-section" style="max-width: 600px; margin: 0 auto; grid-column: span 2;">
-                            <h3><span class="material-icons">qr_code_scanner</span> Donate via UPI</h3>
-                            <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Scan the QR code or use the
-                                UPI ID to make your payment</p>
+                    <div class="form-section" style="max-width: 600px; margin: 0 auto; grid-column: span 2;">
+                        <h3><span class="material-icons">qr_code_scanner</span> Donate via UPI</h3>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Scan the QR code or use the
+                            UPI ID to make your payment</p>
 
-                            <div class="qr-code-container">
-                                <img src="{% static 'images/pehchan_QRcode.jpeg' %}" alt="Pehchan QR Code" style="max-width: 220px; height: auto; border-radius: 8px; display: block;">
-                                <p style="margin: 20px 0 8px 0; font-weight: 700; color: #1a1a1a; font-size: 1.2rem; letter-spacing: -0.5px;">Scan QR Code to Pay</p>
-                                <p style="margin: 0; font-size: 14px; color: #666; font-weight: 500;">Any UPI app works</p>
-                            </div>
+                        <div class="qr-code-container">
+                            <img src="{% static 'images/pehchan_QRcode.jpeg' %}" alt="Pehchan QR Code"
+                                style="max-width: 220px; height: auto; border-radius: 8px; display: block;" loading="lazy">
+                            <p
+                                style="margin: 20px 0 8px 0; font-weight: 700; color: #1a1a1a; font-size: 1.2rem; letter-spacing: -0.5px;">
+                                Scan QR Code to Pay</p>
+                            <p style="margin: 0; font-size: 14px; color: #666; font-weight: 500;">Any UPI app works</p>
+                        </div>
 
-                            <div class="upi-id-box">
-                                <p style="margin: 0; font-size: 14px; font-weight: 500;">UPI ID: <span
-                                        style="font-family: monospace; font-size: 16px;">anikshaupadhyay2001@okicici</span></p>
+                        <div class="upi-id-box">
+                            <p style="margin: 0; font-size: 14px; font-weight: 500;">UPI ID: <span
+                                    style="font-family: monospace; font-size: 16px;">anikshaupadhyay2001@okicici</span>
+                            </p>
                         </div>
 
                         <div class="note-box">
-                            <p>💡 <strong>Note:</strong> For tax benefits and tracking, we recommend creating a free account
+                            <p>💡 <strong>Note:</strong> For tax benefits and tracking, we recommend creating a free
+                                account
                                 and using the regular donation process.</p>
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
     </section>
 
     <script>
@@ -441,7 +449,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <img src="{% static 'images/logos/location_logo.png' %}" alt="Pehchan Location"
-                        style="height: 80px; margin-bottom: 0.5rem;">
+                        style="height: 80px; margin-bottom: 0.5rem;" loading="lazy">
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -463,7 +471,7 @@
         </div>
     </footer>
     <div class="footer-bottom">
-        <p>Copyright © Pehchan-Your Unique Identity. All rights reserved.</p>
+        <p>Copyright © Pehchan YUI Foundation. All rights reserved.</p>
     </div>
 
     <script src="{% static 'js/script.js' %}"></script>

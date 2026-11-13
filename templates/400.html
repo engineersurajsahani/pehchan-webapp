@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Request (400) - Pehchan</title>
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .error-page-container {
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .error-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            max-width: 580px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .error-code {
+            font-size: 6.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 0 0 1rem;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+        .error-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+        .error-desc {
+            font-size: 1.05rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-action-primary {
+            display: inline-block;
+            background: #16a34a;
+            color: #ffffff !important;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+        }
+        .btn-action-primary:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+        }
+        .btn-action-secondary {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569 !important;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-action-secondary:hover {
+            background: #e2e8f0;
+            color: #1e293b !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-logo">
+                    <img src="{% static 'images/logo.png' %}" alt="Pehchan Logo" loading="lazy">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="error-page-container">
+        <div class="error-card">
+            <div class="error-code">400</div>
+            <h1 class="error-title">Bad Request</h1>
+            <p class="error-desc">
+                The server could not understand the request or the domain/host is not recognized. If you believe this is an error, please reach out to our team.
+            </p>
+            <div class="error-actions">
+                <a href="/" class="btn-action-primary">Return to Homepage</a>
+                <a href="/about/" class="btn-action-secondary">About Us</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>madad@pehchanyui.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Pehchan - The Street School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -185,14 +185,16 @@
             }
         }
 
-        /* Center Navbar Content */
-        .nav-container {
-            justify-content: center !important;
-        }
+        /* Center Navbar Content on Desktop */
+        @media (min-width: 769px) {
+            .nav-container {
+                justify-content: center !important;
+            }
 
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 80px !important;
+            .nav-links {
+                margin-left: 0 !important;
+                margin-right: 80px !important;
+            }
         }
     </style>
 </head>
@@ -212,8 +214,8 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
                 {% else %}
-                <a class="mdl-navigation__link" href="{% url 'login' %}">Login</a>
-                <a class="mdl-navigation__link" href="{% url 'signup' %}">Sign Up</a>
+                <li><a href="{% url 'login' %}">LOGIN</a></li>
+                <li><a href="{% url 'signup' %}">SIGN UP</a></li>
                 {% endif %}
             </ul>
             <a href="{% if user.is_authenticated %}{% url 'money_donation' %}{% else %}{% url 'public_donate' %}#support{% endif %}"
@@ -232,7 +234,44 @@
         <div class="container">
 
             <h1 class="section-title-dark georgia-brand">Pehchan</h1>
-            <h2 class="section-subtitle-dark georgia-brand">Your Unique Identity</h2>
+            <h2 class="section-subtitle-dark georgia-brand">YUI Foundation</h2>
+
+            <!-- Official Trust Registration Details -->
+            <div
+                style="background: #ffffff; border-radius: 16px; border: 1.5px solid #e2e8f0; box-shadow: 0 8px 25px rgba(10, 26, 74, 0.08); max-width: 620px; margin: 25px auto; overflow: hidden; text-align: center;">
+                <div
+                    style="background: linear-gradient(135deg, #0A1A4A 0%, #1e3a8a 100%); padding: 16px 20px; color: white;">
+                    <div style="font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px;">
+                        Pehchan YUI Foundation
+                    </div>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; padding: 22px 24px; background: #f8fafc;">
+                    <div
+                        style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px;">
+                        <div
+                            style="font-size: 0.78rem; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.5px;">
+                            Registration / Certificate No.
+                        </div>
+                        <div
+                            style="font-size: 1.2rem; font-weight: 800; color: #ea580c; font-family: monospace; margin-top: 4px;">
+                            E-0015289 (THN)
+                        </div>
+                    </div>
+                    <div
+                        style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px;">
+                        <div
+                            style="font-size: 0.78rem; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.5px;">
+                            Date of Registration / Issue
+                        </div>
+                        <div style="font-size: 1.15rem; font-weight: 700; color: #16a34a; margin-top: 4px;">
+                            7 September 2026
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <img src="{% static 'images/logos/roundlogo.png' %}" alt="Pehchan Logo" class="about-hero-logo-new"
                 style="display: block; margin: 20px auto; max-width: 300px; height: auto; border-radius: 50%;">
             <p class="about-hero-text">We are a purpose-driven NGO committed to creating meaningful change at the
@@ -247,7 +286,7 @@
 
     <!-- Gallery Banner -->
     <section class="about-gallery-new">
-        <img src="{% static 'images/aboutus/39.png' %}" alt="Pehchan Team" class="gallery-bg">
+        <img src="{% static 'images/aboutus/39.png' %}" alt="Pehchan Team" class="gallery-bg" loading="lazy">
     </section>
 
     <!-- Who We Are -->
@@ -255,12 +294,14 @@
         <div class="container">
             <h2>Who We Are</h2>
             <h3>Our Vision</h3>
-            <p>Here at <strong>Pehchan-Your Unique Identity</strong>, we know that sometimes all it takes to change the
+            <p>Here at <strong>Pehchan YUI Foundation</strong>, we know that sometimes all it takes to change the
                 world is a little support. Since our start in 2020, we have been determined to make an impact. The core
                 of our efforts is to bring our team's fresh ideas and passion to the range of activities we're involved
-                in. PEHCHAN-YUI is working for social welfare as a team, which was formed by <strong>Aniksha
-                    Upadhyay</strong> and team in April 2020. It works on several causes Awareness, Children Education,
-                Environment, Animals, helpless people and Community Welfare.</p>
+                in. <strong>Pehchan YUI Foundation</strong> is a registered public trust working for social welfare,
+                formed by <strong>Aniksha Upadhyay</strong> and team in April 2020. Registered under the Public Trusts
+                Registration Act with Certificate Registration No. <strong>E-0015289 (THN)</strong> and Date of
+                Registration / Issue: <strong>7 September 2026</strong>. It works on several causes including Awareness,
+                Children Education, Environment, Animals, helpless people, and Community Welfare.</p>
             <p>Our team is dedicated to service for poor public welfare and animal welfare.</p>
             <p class="jai-hind">जय हिन्द..🇮🇳</p>
         </div>
@@ -273,7 +314,7 @@
             <h2>Our Founder</h2>
             <div class="founder-content-new">
                 <img src="{% static 'images/Members/Aniksha__1_-removebg-preview.png' %}" alt="Founder"
-                    class="founder-img-new">
+                    class="founder-img-new" loading="lazy">
                 <h3 class="founder-name">ANIKSHA UPADHYAY</h3>
                 <p class="founder-title-new">Founder</p>
             </div>
@@ -287,19 +328,18 @@
             <h2>OUR TEAM</h2>
             <div class="team-grid-new">
                 <div class="team-card-new">
-                    <img src="{% static 'images/Members/aj1.png' %}" alt="Team Member"
-                        class="team-img-new">
+                    <img src="{% static 'images/Members/aj1.png' %}" alt="Team Member" class="team-img-new" loading="lazy">
                     <h3>ADITYA JHA</h3>
                     <p class="team-role-new">PROGRAMME<br>MANAGEMENT</p>
                 </div>
                 <div class="team-card-new">
-                    <img src="{% static 'images/Members/Pallavi .jpg' %}" alt="Team Member" class="team-img-new">
+                    <img src="{% static 'images/Members/Pallavi.jpg' %}" alt="PALLAVI THAKUR" class="team-img-new" loading="lazy">
                     <h3>PALLAVI THAKUR</h3>
                     <p class="team-role-new">ADMINISTRATIVE<br>MANAGER</p>
                 </div>
                 <div class="team-card-new">
                     <img src="{% static 'images/Members/shilpapg-removebg-preview.png' %}" alt="Team Member"
-                        class="team-img-new">
+                        class="team-img-new" loading="lazy">
                     <h3>SHILPA DUBEY</h3>
                     <p class="team-role-new">TREASURER</p>
                 </div>
@@ -325,13 +365,20 @@
     </section> -->
 
 
+
+
+
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
                     <img src="{% static 'images/logos/location_logo.png' %}" alt="Pehchan Location"
-                        style="height: 80px; margin-bottom: 0.5rem;">
+                        style="height: 80px; margin-bottom: 0.8rem;" loading="lazy">
+                    <p style="font-weight: 700; color: #F9A826; margin-bottom: 4px;">Pehchan YUI Foundation</p>
+                    <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 2px;"><strong>Reg. No:</strong> E-0015289 (THN)</p>
+                    <p style="font-size: 0.9rem; line-height: 1.5;"><strong>Date of Registration / Issue:</strong> 7 September 2026</p>
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -353,9 +400,12 @@
         </div>
     </footer>
     <div class="footer-bottom">
-        <p>Copyright © Pehchan-Your Unique Identity. All rights reserved.</p>
+        <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.3px;">
+            <span>Registration No: <strong>E-0015289 (THN)</strong></span> &nbsp;•&nbsp; 
+            <span>Date of Registration / Issue: <strong>7 September 2026</strong></span>
+        </div>
+        <p style="margin: 0;">Copyright © Pehchan YUI Foundation. All rights reserved.</p>
     </div>
-
 
     <script src="{% static 'js/script.js' %}"></script>
 </body>

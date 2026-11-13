@@ -19,7 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+handler400 = 'pehchan.views.error_400_view'
+handler403 = 'pehchan.views.error_403_view'
+handler404 = 'pehchan.views.error_404_view'
+handler500 = 'pehchan.views.error_500_view'
+
+from django.views.generic.base import RedirectView
+
 urlpatterns = [
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'images/favicon.ico', permanent=True)),
     path('admin/', admin.site.urls),
     path('', include('pehchan.urls')),
 ]
@@ -29,3 +37,4 @@ if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += staticfiles_urlpatterns()
+

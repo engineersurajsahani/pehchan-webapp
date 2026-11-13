@@ -174,16 +174,17 @@
         }
 
         /* Center Navbar Content */
-        .nav-container {
-            justify-content: center !important;
-        }
+        /* Center Navbar Content on Desktop */
+        @media (min-width: 769px) {
+            .nav-container {
+                justify-content: center !important;
+            }
 
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 80px !important;
+            .nav-links {
+                margin-left: 0 !important;
+                margin-right: 80px !important;
+            }
         }
-
-        /* Removed redundant local image styles - handled globally by style.css */
     </style>
 
 </head>
@@ -203,8 +204,8 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
                 {% else %}
-                <a class="mdl-navigation__link" href="{% url 'login' %}">Login</a>
-                <a class="mdl-navigation__link" href="{% url 'signup' %}">Sign Up</a>
+                <li><a href="{% url 'login' %}">LOGIN</a></li>
+                <li><a href="{% url 'signup' %}">SIGN UP</a></li>
                 {% endif %}
             </ul>
             <a href="{% if user.is_authenticated %}{% url 'money_donation' %}{% else %}{% url 'public_donate' %}#support{% endif %}"
@@ -400,7 +401,7 @@
     <!-- Volunteer Illustration -->
     <section class="volunteer-illustration">
         <div class="container">
-            <img src="{% static 'images/volunteer.png' %}" alt="Volunteers" class="volunteer-img">
+            <img src="{% static 'images/volunteer.png' %}" alt="Volunteers" class="volunteer-img" loading="lazy">
         </div>
     </section>
 
@@ -410,7 +411,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <img src="{% static 'images/logos/location_logo.png' %}" alt="Pehchan Location"
-                        style="height: 80px; margin-bottom: 0.5rem;">
+                        style="height: 80px; margin-bottom: 0.5rem;" loading="lazy">
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -432,7 +433,7 @@
         </div>
     </footer>
     <div class="footer-bottom">
-        <p>Copyright © Pehchan-Your Unique Identity. All rights reserved.</p>
+        <p>Copyright © Pehchan YUI Foundation. All rights reserved.</p>
     </div>
 
     <script src="{% static 'js/script.js' %}"></script>

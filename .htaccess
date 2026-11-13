@@ -1,0 +1,20 @@
+# LiteSpeed / Apache configuration for Django
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Serve static files directly if they exist
+    RewriteCond %{DOCUMENT_ROOT}/staticfiles/$1 -f
+    RewriteRule ^static/(.*)$ staticfiles/$1 [L]
+
+    # Serve media files directly if they exist
+    RewriteCond %{DOCUMENT_ROOT}/media/$1 -f
+    RewriteRule ^media/(.*)$ media/$1 [L]
+
+    # Route everything else to passenger WSGI handler
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ passenger_wsgi.py [QSA,L]
+</IfModule>

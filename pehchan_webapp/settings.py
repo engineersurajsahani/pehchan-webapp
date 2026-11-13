@@ -27,24 +27,34 @@ load_dotenv(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # CRITICAL: SECRET_KEY must be set via environment variable in production
-SECRET_KEY = os.environ.get('SECRET_KEY')
-if not SECRET_KEY:
-    raise ImproperlyConfigured(
-        'The SECRET_KEY environment variable must be set in production!'
-    )
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
-if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
-    ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured("SECRET_KEY environment variable is required in production.")
+    SECRET_KEY = 'django-insecure-wblc*a&toyas8&=^8a(56l=w6#wlvicd&5!jd#ug7)u5ie%nfl'
+
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
+
+# Whitelist NGO domain names (.in and www)
+ALLOWED_HOSTS.extend(['pehchanyui.in', 'www.pehchanyui.in', '.pehchanyui.in'])
 
 # Add Render host if in production
 if 'RENDER' in os.environ:
     render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
     if render_host:
         ALLOWED_HOSTS.append(render_host)
+
+# Add Vercel hosts if in production
+if 'VERCEL' in os.environ:
+    ALLOWED_HOSTS.extend(['.vercel.app', '.now.sh'])
+    vercel_url = os.environ.get('VERCEL_URL')
+    if vercel_url:
+        ALLOWED_HOSTS.append(vercel_url)
+
+# Remove duplicates while preserving list
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
 # Ensure localhost is allowed during development
 if DEBUG:
@@ -104,39 +114,30 @@ WSGI_APPLICATION = 'pehchan_webapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if not DEBUG:
-    # Production: Use the PostgreSQL database URL from the environment (Supabase)
-    db_url = os.environ.get('SUPABASE_URL') or os.environ.get('DATABASE_URL')
-    
-    # Fix for incorrectly pasted environment variables (e.g., b'postgres://...')
-    if db_url:
-        db_url = db_url.strip()
-        if db_url.startswith("b'") or db_url.startswith('b"'):
-            db_url = db_url[2:]
-        if db_url.endswith("'") or db_url.endswith('"'):
-            db_url = db_url[:-1]
-            
-        DATABASES = {
-            'default': dj_database_url.parse(
-                db_url,
-                conn_max_age=600,
-                conn_health_checks=True,
-            )
-        }
-    else:
-        # Fallback to SQLite if no DATABASE_URL is provided
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
+# Database: Use PostgreSQL (Supabase) if DATABASE_URL or SUPABASE_URL is provided, else fallback to SQLite
+db_url = os.environ.get('SUPABASE_URL') or os.environ.get('DATABASE_URL')
+
+if db_url:
+    db_url = db_url.strip()
+    if db_url.startswith("b'") or db_url.startswith('b"'):
+        db_url = db_url[2:]
+    if db_url.endswith("'") or db_url.endswith('"'):
+        db_url = db_url[:-1]
+        
+    DATABASES = {
+        'default': dj_database_url.parse(
+            db_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
 else:
-    # Development: Strictly use a local SQLite database named db_dev.sqlite3
+    # Fallback to SQLite (use /tmp on Vercel to stay writable)
+    db_file = '/tmp/db.sqlite3' if 'VERCEL' in os.environ else BASE_DIR / 'db_dev.sqlite3'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db_dev.sqlite3',
+            'NAME': db_file,
         }
     }
 
@@ -144,8 +145,23 @@ else:
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-# Removed all password validators to allow users to set any password
-AUTH_PASSWORD_VALIDATORS = []
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 
 # Internationalization
@@ -178,6 +194,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise configuration for serving static files
 WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_USE_FINDERS = True
 
 # Media files
 MEDIA_URL = '/media/'
@@ -188,7 +205,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
@@ -248,17 +265,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security Headers (only in production when DEBUG=False)
 if not DEBUG:
-    # Redirect all non-HTTPS requests to HTTPS
-    SECURE_SSL_REDIRECT = True
+    # Redirect all non-HTTPS requests to HTTPS (disabled for local runserver; Vercel edge already enforces HTTPS)
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'True' if 'RENDER' in os.environ else 'False') == 'True'
     
-    # HTTP Strict Transport Security (1 year)
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HTTP Strict Transport Security (only on live cloud environments like Render or custom domain)
+    is_live = ('RENDER' in os.environ or 'VERCEL' in os.environ)
+    SECURE_HSTS_SECONDS = 31536000 if is_live else 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = is_live
+    SECURE_HSTS_PRELOAD = is_live
     
-    # Secure cookies
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    # Secure cookies (enabled on Render/Vercel production, disabled for local HTTP)
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'True' if ('RENDER' in os.environ or 'VERCEL' in os.environ) else 'False') == 'True'
+    CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'True' if ('RENDER' in os.environ or 'VERCEL' in os.environ) else 'False') == 'True'
     
     # Security middleware settings
     SECURE_BROWSER_XSS_FILTER = True
@@ -269,6 +287,14 @@ if not DEBUG:
     
     # XSS Protection
     SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+else:
+    # Development mode: strictly disable all SSL redirects & HSTS
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Session Security
 SESSION_COOKIE_HTTPONLY = True
@@ -283,11 +309,22 @@ if 'RENDER' in os.environ:
     render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
     if render_host:
         CSRF_TRUSTED_ORIGINS.append(f'https://{render_host}')
-    
-    env_allowed_hosts = os.environ.get('ALLOWED_HOSTS', '').split(',')
-    for host in env_allowed_hosts:
-        if host and host.strip():
-            CSRF_TRUSTED_ORIGINS.append(f'https://{host.strip()}')
+
+if 'VERCEL' in os.environ:
+    CSRF_TRUSTED_ORIGINS.extend(['https://*.vercel.app', 'https://*.now.sh'])
+    vercel_url = os.environ.get('VERCEL_URL')
+    if vercel_url:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{vercel_url}')
+
+env_allowed_hosts = os.environ.get('ALLOWED_HOSTS', '').split(',')
+for host in env_allowed_hosts:
+    host_clean = host.strip()
+    if host_clean and host_clean != '*':
+        if not host_clean.startswith(('http://', 'https://')):
+            CSRF_TRUSTED_ORIGINS.append(f'https://{host_clean}')
+            CSRF_TRUSTED_ORIGINS.append(f'http://{host_clean}')
+        else:
+            CSRF_TRUSTED_ORIGINS.append(host_clean)
 
 # Caching Configuration
 CACHES = {
@@ -298,6 +335,9 @@ CACHES = {
 }
 
 # Logging Configuration
+is_serverless = 'VERCEL' in os.environ or 'AWS_LAMBDA_FUNCTION_NAME' in os.environ
+active_handlers = ['console'] if (DEBUG or is_serverless) else ['console', 'file']
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -320,7 +360,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'django_errors.log',
+            'filename': '/tmp/django_errors.log' if is_serverless else BASE_DIR / 'django_errors.log',
             'formatter': 'verbose',
         },
     },
@@ -330,12 +370,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'handlers': active_handlers,
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
         'pehchan': {
-            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'handlers': active_handlers,
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
         },

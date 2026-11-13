@@ -6,8 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pehchan - Your Unique Identity</title>
-    <link rel="stylesheet" href="{% static 'CSS/style.css' %}?v=2">
+    <title>Pehchan YUI Foundation</title>
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
@@ -112,17 +112,17 @@
 
         /* Hero banner base handled by style.css */
 
-        /* Center Navbar Content */
-        .nav-container {
-            justify-content: center !important;
-        }
+        /* Center Navbar Content on Desktop */
+        @media (min-width: 769px) {
+            .nav-container {
+                justify-content: center !important;
+            }
 
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 80px !important;
+            .nav-links {
+                margin-left: 0 !important;
+                margin-right: 80px !important;
+            }
         }
-
-        /* Removed redundant local image styles - handled globally by style.css */
     </style>
 
 </head>
@@ -142,8 +142,8 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
                 {% else %}
-                <a class="mdl-navigation__link" href="{% url 'login' %}">Login</a>
-                <a class="mdl-navigation__link" href="{% url 'signup' %}">Sign Up</a>
+                <li><a href="{% url 'login' %}">LOGIN</a></li>
+                <li><a href="{% url 'signup' %}">SIGN UP</a></li>
                 {% endif %}
             </ul>
             <a href="{% if user.is_authenticated %}{% url 'money_donation' %}{% else %}{% url 'public_donate' %}#support{% endif %}"
@@ -162,7 +162,7 @@
         <div class="hero-content">
             <img src="{% static 'images/PEHCHANlogo.png' %}" class="hero-logo" alt="Pehchan Logo">
             <h1 class="hero-title-green">Pehchan</h1>
-            <h2 class="hero-title-blue">Your Unique Identity</h2>
+            <h2 class="hero-title-blue">YUI Foundation</h2>
             <div class="hero-buttons">
                 <a href="{% if user.is_authenticated %}{% url 'lifetime_volunteer' %}{% else %}{% url 'public_volunteer' %}{% endif %}"
                     class="btn-join">JOIN US</a>
@@ -174,33 +174,31 @@
 
     <!-- About Section -->
     <section class="about-home">
-        <img src="{% static 'images/pink leaf.png' %}" class="leaf-decor leaf-top-left" alt="">
-        <img src="{% static 'images/blue leaf.png' %}" class="leaf-decor leaf-top-right" alt="">
-        <img src="{% static 'images/pink leaf.png' %}" class="leaf-decor leaf-bottom-left" alt="">
-        <img src="{% static 'images/blue leaf.png' %}" class="leaf-decor leaf-bottom-right" alt="">
+        <img src="{% static 'images/pink_leaf.png' %}" class="leaf-decor leaf-top-left" alt="" loading="lazy">
+        <img src="{% static 'images/blue_leaf.png' %}" class="leaf-decor leaf-top-right" alt="" loading="lazy">
+        <img src="{% static 'images/pink_leaf.png' %}" class="leaf-decor leaf-bottom-left" alt="" loading="lazy">
+        <img src="{% static 'images/blue_leaf.png' %}" class="leaf-decor leaf-bottom-right" alt="" loading="lazy">
         <div class="container">
-            <p class="about-intro">Established in 2020, Pehchan-your unique identity is a non-profit organisation
+            <p class="about-intro">Established in 2020, Pehchan YUI Foundation is a non-profit organisation
                 focused on the education of underprivileged children and helping the homeless.</p>
         </div>
     </section>
 
     <!-- Our Cause -->
     <section class="our-cause">
-        <img src="{% static 'images/blue leaf.png' %}" class="leaf-decor leaf-cause-left" alt="">
-        <img src="{% static 'images/pink leaf.png' %}" class="leaf-decor leaf-cause-right" alt="">
+        <img src="{% static 'images/blue_leaf.png' %}" class="leaf-decor leaf-cause-left" alt="" loading="lazy">
+        <img src="{% static 'images/pink_leaf.png' %}" class="leaf-decor leaf-cause-right" alt="" loading="lazy">
         <div class="container">
             <h2 class="section-title-orange">OUR CAUSE</h2>
             <div class="cause-grid">
                 <div class="cause-card">
-                    <img src="{% static 'images/NGO images/education/Screenshot 2025-07-13 at 05.28.23.png' %}"
-                        alt="Education">
+                    <img src="{% static 'images/home/education/screenshot_education_1.png' %}" alt="Education" loading="lazy">
                 </div>
                 <div class="cause-card">
-                    <img src="{% static 'images/NGO images/education/Screenshot 2025-07-13 at 05.28.33.png' %}"
-                        alt="Education">
+                    <img src="{% static 'images/home/education/screenshot_education_2.png' %}" alt="Education" loading="lazy">
                 </div>
                 <div class="cause-card">
-                    <img src="{% static 'images/home/education/17.png' %}" alt="Community">
+                    <img src="{% static 'images/home/education/17.png' %}" alt="Community" loading="lazy">
                 </div>
             </div>
         </div>
@@ -217,12 +215,12 @@
                 </div>
                 <div class="activity-images">
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/utsav/36.png' %}" alt="Ration Distribution">
-                        <img src="{% static 'images/events/utsav/38.png' %}" alt="Ration Distribution">
+                        <img src="{% static 'images/events/utsav/36.png' %}" alt="Ration Distribution" loading="lazy">
+                        <img src="{% static 'images/events/utsav/38.png' %}" alt="Ration Distribution" loading="lazy">
                     </div>
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/utsav/39.png' %}" alt="Ration Distribution">
-                        <img src="{% static 'images/events/utsav/42.png' %}" alt="Ration Distribution">
+                        <img src="{% static 'images/events/utsav/39.png' %}" alt="Ration Distribution" loading="lazy">
+                        <img src="{% static 'images/events/utsav/42.png' %}" alt="Ration Distribution" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -242,13 +240,12 @@
                 <div class="activity-images">
 
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/environments/11.a044af71e638.png' %}"
-                            alt="Environment Protection">
-                        <img src="{% static 'images/events/environments/2.png' %}" alt="Environment Protection">
+                        <img src="{% static 'images/events/environments/11.png' %}" alt="Environment Protection" loading="lazy">
+                        <img src="{% static 'images/events/environments/2.png' %}" alt="Environment Protection" loading="lazy">
                     </div>
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/environments/15.png' %}" alt="Environment Protection">
-                        <img src="{% static 'images/events/environments/14.png' %}" alt="Environment Protection">
+                        <img src="{% static 'images/events/environments/15.png' %}" alt="Environment Protection" loading="lazy">
+                        <img src="{% static 'images/events/environments/14.png' %}" alt="Environment Protection" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -266,12 +263,12 @@
                 </div>
                 <div class="activity-images">
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/poverty/4.png' %}" alt="Ration Distribution">
-                        <img src="{% static 'images/events/poverty/50.png' %}" alt="Ration Distribution">
+                        <img src="{% static 'images/events/poverty/4.png' %}" alt="Ration Distribution" loading="lazy">
+                        <img src="{% static 'images/events/poverty/50.png' %}" alt="Ration Distribution" loading="lazy">
                     </div>
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/poverty/51.png' %}" alt="Ration Distribution">
-                        <img src="{% static 'images/events/poverty/53.png' %}" alt="Ration Distribution">
+                        <img src="{% static 'images/events/poverty/51.png' %}" alt="Ration Distribution" loading="lazy">
+                        <img src="{% static 'images/events/poverty/53.png' %}" alt="Ration Distribution" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -294,12 +291,12 @@
                 </div>
                 <div class="activity-images">
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/education/17.png' %}" alt="Walk for Homeless">
-                        <img src="{% static 'images/events/education/19.png' %}" alt="Walk for Homeless">
+                        <img src="{% static 'images/events/education/17.png' %}" alt="Walk for Homeless" loading="lazy">
+                        <img src="{% static 'images/events/education/19.png' %}" alt="Walk for Homeless" loading="lazy">
                     </div>
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/education/22.png' %}" alt="Walk for Homeless">
-                        <img src="{% static 'images/events/education/25.jpg' %}" alt="Walk for Homeless">
+                        <img src="{% static 'images/events/education/22.png' %}" alt="Walk for Homeless" loading="lazy">
+                        <img src="{% static 'images/events/education/25.jpg' %}" alt="Walk for Homeless" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -350,12 +347,12 @@
                 </div>
                 <div class="activity-images">
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/memorable/30.png' %}" alt="Memorable Day">
-                        <img src="{% static 'images/events/memorable/10.png' %}" alt="Memorable Day">
+                        <img src="{% static 'images/events/memorable/30.png' %}" alt="Memorable Day" loading="lazy">
+                        <img src="{% static 'images/events/memorable/10.png' %}" alt="Memorable Day" loading="lazy">
                     </div>
                     <div class="activity-images-row">
-                        <img src="{% static 'images/events/memorable/34.png' %}" alt="Memorable Day">
-                        <img src="{% static 'images/events/memorable/35.png' %}" alt="Memorable Day">
+                        <img src="{% static 'images/events/memorable/34.png' %}" alt="Memorable Day" loading="lazy">
+                        <img src="{% static 'images/events/memorable/35.png' %}" alt="Memorable Day" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -391,7 +388,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <img src="{% static 'images/logos/location_logo.png' %}" alt="Pehchan Location"
-                        style="height: 80px; margin-bottom: 0.5rem;">
+                        style="height: 80px; margin-bottom: 0.5rem;" loading="lazy">
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -413,7 +410,7 @@
         </div>
     </footer>
     <div class="footer-bottom">
-        <p>Copyright © Pehchan-Your Unique Identity. All rights reserved.</p>
+        <p>Copyright © Pehchan YUI Foundation. All rights reserved.</p>
     </div>
 
     <script src="{% static 'js/script.js' %}?v=2"></script>

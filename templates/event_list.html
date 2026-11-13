@@ -44,7 +44,7 @@
             <div class="surface-card" style="transition: all 0.3s ease;">
                 {% if event.image %}
                 <div class="event-card__media">
-                    <img src="{{ event.image.url }}" alt="{{ event.name }}">
+                    <img src="{{ event.image.url }}" alt="{{ event.name }}" loading="lazy">
                 </div>
                 {% endif %}
                 <div class="mdl-card__title">

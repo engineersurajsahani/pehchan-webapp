@@ -2,6 +2,24 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import EventVolunteer, LifetimeVolunteer, MaterialDonation, MoneyDonation, ContactMessage, AnonymousDonation
+import re
+
+
+def validate_indian_mobile_number(number):
+    """Enforce valid 10-digit mobile number starting with 6, 7, 8, or 9 and reject sequential/dummy numbers"""
+    number = str(number).strip()
+    if not re.match(r'^[6-9]\d{9}$', number):
+        raise forms.ValidationError("Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.")
+    
+    # Reject dummy repetitive numbers like 9999999999, 8888888888, 7777777777
+    if len(set(number)) == 1:
+        raise forms.ValidationError("Please enter a valid mobile number, not a repeating digit pattern.")
+        
+    # Reject common fake test sequences
+    fake_sequences = ['1234567890', '9876543210', '9898989898', '9900990099', '9123456789']
+    if number in fake_sequences:
+        raise forms.ValidationError("Please enter your actual valid mobile number.")
+    return number
 
 
 class SignUpForm(UserCreationForm):
@@ -32,10 +50,31 @@ class SignUpForm(UserCreationForm):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Password'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm Password'})
-        
-        # Remove password validators to allow any password
-        self.fields['password1'].help_text = None
-        self.fields['password2'].help_text = None
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email:
+            raise forms.ValidationError("Email is required.")
+        # Reject disposable / fake domains
+        fake_domains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'throwawaymail.com', 'fake.com', 'test.com']
+        domain = email.split('@')[-1] if '@' in email else ''
+        if domain in fake_domains:
+            raise forms.ValidationError("Disposable or fake email addresses are not allowed. Please enter a valid email.")
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("An account with this email address already exists.")
+        return email
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name', '').strip()
+        if len(first_name) < 2 or not first_name.replace(' ', '').isalpha():
+            raise forms.ValidationError("First name must contain at least 2 alphabetic characters.")
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name', '').strip()
+        if len(last_name) < 2 or not last_name.replace(' ', '').isalpha():
+            raise forms.ValidationError("Last name must contain at least 2 alphabetic characters.")
+        return last_name
 
 
 class LoginForm(AuthenticationForm):
@@ -68,11 +107,7 @@ class EventVolunteerForm(forms.ModelForm):
     
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
-        if contact_number and not contact_number.isdigit():
-            raise forms.ValidationError("Contact number must contain only digits.")
-        if contact_number and len(contact_number) != 10:
-            raise forms.ValidationError("Contact number must be exactly 10 digits.")
-        return contact_number
+        return validate_indian_mobile_number(contact_number)
         
 
 class LifetimeVolunteerForm(forms.ModelForm):
@@ -101,11 +136,7 @@ class LifetimeVolunteerForm(forms.ModelForm):
     
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
-        if contact_number and not contact_number.isdigit():
-            raise forms.ValidationError("Contact number must contain only digits.")
-        if contact_number and len(contact_number) != 10:
-            raise forms.ValidationError("Contact number must be exactly 10 digits.")
-        return contact_number
+        return validate_indian_mobile_number(contact_number)
 
 
 class MaterialDonationForm(forms.ModelForm):
@@ -147,11 +178,7 @@ class MaterialDonationForm(forms.ModelForm):
     
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
-        if contact_number and not contact_number.isdigit():
-            raise forms.ValidationError("Contact number must contain only digits.")
-        if contact_number and len(contact_number) != 10:
-            raise forms.ValidationError("Contact number must be exactly 10 digits.")
-        return contact_number
+        return validate_indian_mobile_number(contact_number)
 
 
 class MoneyDonationForm(forms.ModelForm):
@@ -189,11 +216,7 @@ class MoneyDonationForm(forms.ModelForm):
     
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
-        if contact_number and not contact_number.isdigit():
-            raise forms.ValidationError("Contact number must contain only digits.")
-        if contact_number and len(contact_number) != 10:
-            raise forms.ValidationError("Contact number must be exactly 10 digits.")
-        return contact_number
+        return validate_indian_mobile_number(contact_number)
 
 
 class CertificateVerificationForm(forms.Form):
@@ -291,6 +314,22 @@ class AnonymousDonationForm(forms.ModelForm):
             'message': 'Message'
         }
 
+    def clean_donor_email(self):
+        email = self.cleaned_data.get('donor_email')
+        if email:
+            email = email.strip().lower()
+            fake_domains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'throwawaymail.com', 'fake.com', 'test.com']
+            domain = email.split('@')[-1] if '@' in email else ''
+            if domain in fake_domains:
+                raise forms.ValidationError("Please provide a valid non-disposable email address.")
+        return email
+
+    def clean_donor_phone(self):
+        phone = self.cleaned_data.get('donor_phone')
+        if phone:
+            return validate_indian_mobile_number(phone)
+        return phone
+
 
 class ForgotPasswordForm(forms.Form):
     """Form for entering email to reset password"""
@@ -315,6 +354,10 @@ class OTPVerificationForm(forms.Form):
     )
 
 
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+
+
 class ResetPasswordForm(forms.Form):
     """Form for resetting password"""
     new_password = forms.CharField(
@@ -331,6 +374,19 @@ class ResetPasswordForm(forms.Form):
             'required': True
         })
     )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean_new_password(self):
+        new_password = self.cleaned_data.get('new_password')
+        if new_password:
+            try:
+                validate_password(new_password, user=self.user)
+            except DjangoValidationError as error:
+                raise forms.ValidationError(error.messages)
+        return new_password
 
     def clean(self):
         cleaned_data = super().clean()

@@ -16,7 +16,7 @@
         box-shadow: var(--shadow-md);
         border: 1px solid var(--neutral-200);
     }
-    
+
     .quick-nav-item {
         display: flex;
         flex-direction: column;
@@ -29,14 +29,14 @@
         background: var(--neutral-50);
         border: 2px solid transparent;
     }
-    
+
     .quick-nav-item:hover {
         background: var(--primary-50);
         border-color: var(--primary-200);
         transform: translateY(-4px);
         box-shadow: var(--shadow-md);
     }
-    
+
     .quick-nav-icon {
         width: 56px;
         height: 56px;
@@ -47,28 +47,28 @@
         justify-content: center;
         box-shadow: var(--shadow-sm);
     }
-    
+
     .quick-nav-item:hover .quick-nav-icon {
         transform: scale(1.1);
         box-shadow: var(--shadow-md);
     }
-    
+
     .quick-nav-icon.secondary {
         background: linear-gradient(135deg, var(--secondary-500), var(--secondary-400));
     }
-    
+
     .quick-nav-icon .material-icons-round {
         color: white;
         font-size: 28px;
     }
-    
+
     .quick-nav-label {
         font-weight: 600;
         color: var(--text-primary);
         font-size: 0.9rem;
         text-align: center;
     }
-    
+
     @media (max-width: 768px) {
         .quick-nav {
             grid-template-columns: repeat(2, 1fr);
@@ -80,9 +80,10 @@
 {% block content %}
 <div class="dashboard-hero">
     <div class="dashboard-hero-content">
-        <span class="badge-chip"><span class="material-icons-round">eco</span> Pehchan_YUI</span>
+        <span class="badge-chip"><span class="material-icons-round">eco</span> Pehchan YUI Foundation</span>
         <h1 class="georgia-brand">Welcome back, {{ user.get_full_name|default:user.username }}</h1>
-        <p>Your actions nourish communities and keep our planet thriving. Explore fresh opportunities to volunteer, donate, and celebrate your impact.</p>
+        <p>Your actions nourish communities and keep our planet thriving. Explore fresh opportunities to volunteer,
+            donate, and celebrate your impact.</p>
     </div>
 </div>
 
@@ -94,35 +95,35 @@
         </div>
         <span class="quick-nav-label">Browse Events</span>
     </a>
-    
+
     <a href="{% url 'material_donation' %}" class="quick-nav-item">
         <div class="quick-nav-icon">
             <span class="material-icons-round">inventory_2</span>
         </div>
         <span class="quick-nav-label">Donate Materials</span>
     </a>
-    
+
     <a href="{% url 'money_donation' %}" class="quick-nav-item">
         <div class="quick-nav-icon secondary">
             <span class="material-icons-round">payments</span>
         </div>
         <span class="quick-nav-label">Donate Money</span>
     </a>
-    
+
     <a href="{% url 'certificate_list' %}" class="quick-nav-item">
         <div class="quick-nav-icon">
             <span class="material-icons-round">verified</span>
         </div>
         <span class="quick-nav-label">My Certificates</span>
     </a>
-    
+
     <a href="{% url 'donor_certificate_list' %}" class="quick-nav-item">
         <div class="quick-nav-icon secondary">
             <span class="material-icons-round">workspace_premium</span>
         </div>
         <span class="quick-nav-label">Donor Certificates</span>
     </a>
-    
+
     {% if not is_lifetime_volunteer %}
     <a href="{% url 'lifetime_volunteer' %}" class="quick-nav-item">
         <div class="quick-nav-icon">
@@ -165,18 +166,20 @@
         {% if user.is_staff and managed_events %}
         <div class="surface-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><span class="material-icons-round">edit_calendar</span> Events I've Added</h2>
+                <h2 class="mdl-card__title-text"><span class="material-icons-round">edit_calendar</span> Events I've
+                    Added</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <ul class="list-elevated">
                     {% for event in managed_events %}
-                        <li>
-                            <span class="material-icons-round">settings</span>
-                            <div>
-                                <a href="{% url 'event_detail' event.pk %}">{{ event.name }}</a>
-                                <span class="metric-footnote">{{ event.event_date }} · Status: {{ event.get_status_display }}</span>
-                            </div>
-                        </li>
+                    <li>
+                        <span class="material-icons-round">settings</span>
+                        <div>
+                            <a href="{% url 'event_detail' event.pk %}">{{ event.name }}</a>
+                            <span class="metric-footnote">{{ event.event_date }} · Status: {{ event.get_status_display
+                                }}</span>
+                        </div>
+                    </li>
                     {% endfor %}
                 </ul>
                 <div style="margin-top: 18px;">
@@ -193,67 +196,72 @@
             <div class="mdl-card__supporting-text">
                 <form method="GET" action="." style="margin-bottom: 16px; display: flex; gap: 8px;">
                     <div class="form-field" style="margin: 0; flex-grow: 1;">
-                        <input type="text" name="upcoming_search" placeholder="Search events..." value="{{ upcoming_search }}" class="form-control" style="height: 40px; padding: 0 12px;">
+                        <input type="text" name="upcoming_search" placeholder="Search events..."
+                            value="{{ upcoming_search }}" class="form-control" style="height: 40px; padding: 0 12px;">
                     </div>
-                    <button type="submit" class="pill-button pill-button--primary" style="padding: 0 16px; height: 40px;">
+                    <button type="submit" class="pill-button pill-button--primary"
+                        style="padding: 0 16px; height: 40px;">
                         <span class="material-icons-round">search</span>
                     </button>
                 </form>
                 {% if upcoming_events %}
-                    <ul class="list-elevated">
-                        {% for event in upcoming_events|slice:":3" %}
-                            <li>
-                                <span class="material-icons-round">calendar_today</span>
-                                <div>
-                                    <a href="{% url 'event_detail' event.pk %}">{{ event.name }}</a>
-                                    <span class="metric-footnote">{{ event.event_date }} · {{ event.location }}</span>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div style="margin-top: 18px;">
-                        <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">View All Events</a>
-                    </div>
+                <ul class="list-elevated">
+                    {% for event in upcoming_events|slice:":3" %}
+                    <li>
+                        <span class="material-icons-round">calendar_today</span>
+                        <div>
+                            <a href="{% url 'event_detail' event.pk %}">{{ event.name }}</a>
+                            <span class="metric-footnote">{{ event.event_date }} · {{ event.location }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="margin-top: 18px;">
+                    <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">View All Events</a>
+                </div>
                 {% else %}
-                    <div class="info-panel info-panel--sky">
-                        <span>No upcoming events right now. Stay tuned for fresh opportunities!</span>
-                    </div>
+                <div class="info-panel info-panel--sky">
+                    <span>No upcoming events right now. Stay tuned for fresh opportunities!</span>
+                </div>
                 {% endif %}
             </div>
         </div>
         <div class="surface-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><span class="material-icons-round">check_circle</span> My Joined Events</h2>
+                <h2 class="mdl-card__title-text"><span class="material-icons-round">check_circle</span> My Joined Events
+                </h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <form method="GET" action="." style="margin-bottom: 16px; display: flex; gap: 8px;">
                     <div class="form-field" style="margin: 0; flex-grow: 1;">
-                        <input type="text" name="joined_search" placeholder="Search my events..." value="{{ joined_search }}" class="form-control" style="height: 40px; padding: 0 12px;">
+                        <input type="text" name="joined_search" placeholder="Search my events..."
+                            value="{{ joined_search }}" class="form-control" style="height: 40px; padding: 0 12px;">
                     </div>
-                    <button type="submit" class="pill-button pill-button--primary" style="padding: 0 16px; height: 40px;">
+                    <button type="submit" class="pill-button pill-button--primary"
+                        style="padding: 0 16px; height: 40px;">
                         <span class="material-icons-round">search</span>
                     </button>
                 </form>
                 {% if joined_events %}
-                    <ul class="list-elevated">
-                        {% for ev in joined_events|slice:":3" %}
-                            <li>
-                                <span class="material-icons-round">event_available</span>
-                                <div>
-                                    <a href="{% url 'event_detail' ev.event.pk %}">{{ ev.event.name }}</a>
-                                    <span class="metric-footnote">Status: {{ ev.get_status_display }}</span>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div style="margin-top: 18px;">
-                        <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">Browse Events</a>
-                    </div>
+                <ul class="list-elevated">
+                    {% for ev in joined_events|slice:":3" %}
+                    <li>
+                        <span class="material-icons-round">event_available</span>
+                        <div>
+                            <a href="{% url 'event_detail' ev.event.pk %}">{{ ev.event.name }}</a>
+                            <span class="metric-footnote">Status: {{ ev.get_status_display }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="margin-top: 18px;">
+                    <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">Browse Events</a>
+                </div>
                 {% else %}
-                    <div class="info-panel">
-                        <span>You haven't joined any events yet. Explore new experiences to grow the green movement.</span>
-                        <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">Browse Events</a>
-                    </div>
+                <div class="info-panel">
+                    <span>You haven't joined any events yet. Explore new experiences to grow the green movement.</span>
+                    <a href="{% url 'event_list' %}" class="pill-button pill-button--primary">Browse Events</a>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -266,55 +274,59 @@
     <div class="dashboard-grid">
         <div class="surface-card certificate-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><span class="material-icons-round">card_membership</span> Volunteer Certificates</h2>
+                <h2 class="mdl-card__title-text"><span class="material-icons-round">card_membership</span> Volunteer
+                    Certificates</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 {% if certificates %}
-                    <ul class="list-elevated">
-                        {% for cert in certificates|slice:":3" %}
-                            <li>
-                                <span class="material-icons-round">verified</span>
-                                <div>
-                                    <a href="{% url 'certificate_detail' cert.pk %}">Certificate #{{ cert.certificate_number|default:cert.pk }}</a>
-                                    <span class="metric-footnote">{{ cert.event.name }} · Issued {{ cert.issue_date }}</span>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div style="margin-top: 18px;">
-                        <a href="{% url 'certificate_list' %}" class="pill-button pill-button--primary">View All</a>
-                    </div>
+                <ul class="list-elevated">
+                    {% for cert in certificates|slice:":3" %}
+                    <li>
+                        <span class="material-icons-round">verified</span>
+                        <div>
+                            <a href="{% url 'certificate_detail' cert.pk %}">Certificate #{{
+                                cert.certificate_number|default:cert.pk }}</a>
+                            <span class="metric-footnote">{{ cert.event.name }} · Issued {{ cert.issue_date }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="margin-top: 18px;">
+                    <a href="{% url 'certificate_list' %}" class="pill-button pill-button--primary">View All</a>
+                </div>
                 {% else %}
-                    <div class="info-panel info-panel--sun">
-                        <span>Complete events to unlock certificates.</span>
-                    </div>
+                <div class="info-panel info-panel--sun">
+                    <span>Complete events to unlock certificates.</span>
+                </div>
                 {% endif %}
             </div>
         </div>
         <div class="surface-card certificate-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><span class="material-icons-round">workspace_premium</span> Donor Certificates</h2>
+                <h2 class="mdl-card__title-text"><span class="material-icons-round">workspace_premium</span> Donor
+                    Certificates</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 {% if donor_certificates %}
-                    <ul class="list-elevated">
-                        {% for cert in donor_certificates|slice:":3" %}
-                            <li>
-                                <span class="material-icons-round">card_giftcard</span>
-                                <div>
-                                    <a href="{% url 'donor_certificate_detail' cert.pk %}">{{ cert.certificate_number }}</a>
-                                    <span class="metric-footnote">{{ cert.get_donation_type_display }} · {{ cert.issue_date }}</span>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div style="margin-top: 18px;">
-                        <a href="{% url 'donor_certificate_list' %}" class="pill-button pill-button--primary">View All</a>
-                    </div>
+                <ul class="list-elevated">
+                    {% for cert in donor_certificates|slice:":3" %}
+                    <li>
+                        <span class="material-icons-round">card_giftcard</span>
+                        <div>
+                            <a href="{% url 'donor_certificate_detail' cert.pk %}">{{ cert.certificate_number }}</a>
+                            <span class="metric-footnote">{{ cert.get_donation_type_display }} · {{ cert.issue_date
+                                }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="margin-top: 18px;">
+                    <a href="{% url 'donor_certificate_list' %}" class="pill-button pill-button--primary">View All</a>
+                </div>
                 {% else %}
-                    <div class="info-panel info-panel--sun">
-                        <span>Make donations to receive appreciation certificates.</span>
-                    </div>
+                <div class="info-panel info-panel--sun">
+                    <span>Make donations to receive appreciation certificates.</span>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -327,43 +339,44 @@
     <div class="dashboard-grid">
         <div class="surface-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><span class="material-icons-round">volunteer_activism</span> Donation History</h2>
+                <h2 class="mdl-card__title-text"><span class="material-icons-round">volunteer_activism</span> Donation
+                    History</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <div class="highlight-card">
                     <span><strong>Material Donations</strong></span>
                     {% if material_donations %}
-                        <ul class="list-elevated">
-                            {% for donation in material_donations|slice:":3" %}
-                                <li>
-                                    <span class="material-icons-round">inventory_2</span>
-                                    <div>
-                                        <span>{{ donation.item_name }} ({{ donation.quantity }})</span>
-                                        <span class="metric-footnote">Status: {{ donation.get_status_display }}</span>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                    <ul class="list-elevated">
+                        {% for donation in material_donations|slice:":3" %}
+                        <li>
+                            <span class="material-icons-round">inventory_2</span>
+                            <div>
+                                <span>{{ donation.item_name }} ({{ donation.quantity }})</span>
+                                <span class="metric-footnote">Status: {{ donation.get_status_display }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% else %}
-                        <span class="metric-footnote">No material donations yet.</span>
+                    <span class="metric-footnote">No material donations yet.</span>
                     {% endif %}
                 </div>
                 <div class="highlight-card" style="margin-top: 22px;">
                     <span><strong>Money Donations</strong></span>
                     {% if money_donations %}
-                        <ul class="list-elevated">
-                            {% for donation in money_donations|slice:":3" %}
-                                <li>
-                                    <span class="material-icons-round">payments</span>
-                                    <div>
-                                        <span>₹{{ donation.amount }}</span>
-                                        <span class="metric-footnote">{{ donation.created_at|date:"M d, Y" }}</span>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                    <ul class="list-elevated">
+                        {% for donation in money_donations|slice:":3" %}
+                        <li>
+                            <span class="material-icons-round">payments</span>
+                            <div>
+                                <span>₹{{ donation.amount }}</span>
+                                <span class="metric-footnote">{{ donation.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% else %}
-                        <span class="metric-footnote">No money donations yet.</span>
+                    <span class="metric-footnote">No money donations yet.</span>
                     {% endif %}
                 </div>
             </div>
@@ -373,41 +386,44 @@
 
 {% if not is_lifetime_volunteer %}
 <div class="surface-card" style="margin-top: 32px;">
-    <div class="mdl-card__title" style="background: linear-gradient(135deg, rgba(46, 125, 50, 0.95), rgba(76, 175, 80, 0.9));">
+    <div class="mdl-card__title"
+        style="background: linear-gradient(135deg, rgba(46, 125, 50, 0.95), rgba(76, 175, 80, 0.9));">
         <h2 class="mdl-card__title-text"><span class="material-icons-round">stars</span> Lifetime Volunteer</h2>
     </div>
     <div class="mdl-card__supporting-text">
         {% if user.lifetime_volunteer %}
-            {% if user.lifetime_volunteer.status == 'pending' %}
-                <div class="info-panel info-panel--warning">
-                    <span class="material-icons-round">hourglass_empty</span>
-                    <div>
-                        <h3>Application Under Review</h3>
-                        <p>Thank you for applying to become a lifetime volunteer. Your application is currently under review and will be processed soon.</p>
-                    </div>
-                </div>
-            {% elif user.lifetime_volunteer.status == 'rejected' %}
-                <div class="info-panel info-panel--error">
-                    <span class="material-icons-round">cancel</span>
-                    <div>
-                        <h3>Application Not Approved</h3>
-                        <p>We regret to inform you that your lifetime volunteer application has not been approved at this time. If you have any questions, please contact our team.</p>
-                    </div>
-                </div>
-            {% endif %}
+        {% if user.lifetime_volunteer.status == 'pending' %}
+        <div class="info-panel info-panel--warning">
+            <span class="material-icons-round">hourglass_empty</span>
+            <div>
+                <h3>Application Under Review</h3>
+                <p>Thank you for applying to become a lifetime volunteer. Your application is currently under review and
+                    will be processed soon.</p>
+            </div>
+        </div>
+        {% elif user.lifetime_volunteer.status == 'rejected' %}
+        <div class="info-panel info-panel--error">
+            <span class="material-icons-round">cancel</span>
+            <div>
+                <h3>Application Not Approved</h3>
+                <p>We regret to inform you that your lifetime volunteer application has not been approved at this time.
+                    If you have any questions, please contact our team.</p>
+            </div>
+        </div>
+        {% endif %}
         {% else %}
-            <div class="lifetime-highlight">
-                <span class="material-icons-round:local_florist</span>
-                <div>
-                    <h3>Become a Lifetime Volunteer</h3>
-                    <p>Join our core team and make a lasting commitment to creating positive change in our community.</p>
-                </div>
+        <div class="lifetime-highlight">
+            <span class="material-icons-round">local_florist</span>
+            <div>
+                <h3>Become a Lifetime Volunteer</h3>
+                <p>Join our core team and make a lasting commitment to creating positive change in our community.</p>
             </div>
-            <div style="text-align: center; margin-top: 24px;">
-                <a href="{% url 'lifetime_volunteer' %}" class="pill-button pill-button--primary">
-                    <span class="material-icons-round">stars</span> Apply Now
-                </a>
-            </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+            <a href="{% url 'lifetime_volunteer' %}" class="pill-button pill-button--primary">
+                <span class="material-icons-round">stars</span> Apply Now
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>
@@ -415,7 +431,8 @@
 
 {% if is_lifetime_volunteer %}
 <div class="surface-card" style="margin-top: 32px;">
-    <div class="mdl-card__title" style="background: linear-gradient(135deg, rgba(46, 125, 50, 0.95), rgba(76, 175, 80, 0.9));">
+    <div class="mdl-card__title"
+        style="background: linear-gradient(135deg, rgba(46, 125, 50, 0.95), rgba(76, 175, 80, 0.9));">
         <h2 class="mdl-card__title-text"><span class="material-icons-round">emoji_events</span> Lifetime Volunteer</h2>
     </div>
     <div class="mdl-card__supporting-text">
@@ -423,7 +440,8 @@
             <span class="material-icons-round">local_florist</span>
             <div>
                 <h3>Application has been verified</h3>
-                <p>Your lifetime commitment keeps Pehchan rooted in purpose and flourishing with possibilities. Thank you for nurturing hope!</p>
+                <p>Your lifetime commitment keeps Pehchan rooted in purpose and flourishing with possibilities. Thank
+                    you for nurturing hope!</p>
             </div>
         </div>
     </div>
@@ -432,12 +450,15 @@
 
 <!-- Contact Section -->
 <div class="surface-card" style="margin-top: 32px; margin-bottom: 32px;">
-    <div class="mdl-card__title" style="background: linear-gradient(135deg, var(--secondary-600), var(--secondary-400)); color: white;">
-        <h2 class="mdl-card__title-text"><span class="material-icons-round">contact_support</span> Send us a message</h2>
+    <div class="mdl-card__title"
+        style="background: linear-gradient(135deg, var(--secondary-600), var(--secondary-400)); color: white;">
+        <h2 class="mdl-card__title-text"><span class="material-icons-round">contact_support</span> Send us a message
+        </h2>
     </div>
     <div class="mdl-card__supporting-text" style="padding: 24px;">
-        <p style="margin-bottom: 24px; color: var(--text-secondary);">Have a question or feedback? We'd love to hear from you. Our team will get back to you as soon as possible.</p>
-        
+        <p style="margin-bottom: 24px; color: var(--text-secondary);">Have a question or feedback? We'd love to hear
+            from you. Our team will get back to you as soon as possible.</p>
+
         {% include 'includes/_contact_form.html' with contact_form_action='.' %}
     </div>
 </div>

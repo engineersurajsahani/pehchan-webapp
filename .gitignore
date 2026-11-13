@@ -1,9 +1,30 @@
-staticfiles/
+# Python & Bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
 venv/
-db.sqlite3
-media/
+.venv/
+env/
+ENV/
+
+# Environment Variables & Secrets
 .env
-django_errors.log
+.env.local
+
+# Django & Media
+media/
+staticfiles/
 *.log
+django_errors.log
+*.sqlite3
+*.sqlite3-journal
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json

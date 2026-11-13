@@ -44,7 +44,7 @@
             background: #fff;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -53,7 +53,7 @@
 
         .event-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .event-image {
@@ -81,8 +81,15 @@
             margin-bottom: 1rem;
         }
 
-        .status-upcoming { background: #e3f2fd; color: #1976d2; }
-        .status-ongoing { background: #e8f5e9; color: #2e7d32; }
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-ongoing {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
 
         .event-card h3 {
             font-size: 1.4rem;
@@ -184,14 +191,16 @@
             background: #e69519;
         }
 
-        /* Center Navbar Content */
-        .nav-container {
-            justify-content: center !important;
-        }
+        /* Center Navbar Content on Desktop */
+        @media (min-width: 769px) {
+            .nav-container {
+                justify-content: center !important;
+            }
 
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 80px !important;
+            .nav-links {
+                margin-left: 0 !important;
+                margin-right: 80px !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -239,43 +248,45 @@
         <!-- Search -->
         <div class="search-container">
             <form action="{% url 'public_events' %}" method="get" class="search-form">
-                <input type="text" name="search" placeholder="Search events by name, location..." value="{{ search_query }}" class="search-input">
+                <input type="text" name="search" placeholder="Search events by name, location..."
+                    value="{{ search_query }}" class="search-input">
                 <button type="submit" class="search-btn">SEARCH</button>
             </form>
         </div>
 
         {% if events %}
-            <div class="events-grid">
-                {% for event in events %}
-                    <div class="event-card">
-                        {% if event.image %}
-                            <img src="{{ event.image.url }}" alt="{{ event.name }}" class="event-image">
-                        {% else %}
-                            <img src="{% static 'images/background.png' %}" alt="{{ event.name }}" class="event-image">
-                        {% endif %}
-                        <div class="event-info">
-                            <span class="event-status status-{{ event.status }}">
-                                {{ event.get_status_display }}
-                            </span>
-                            <h3>{{ event.name }}</h3>
-                            <div class="event-meta">
-                                <div>📅 {{ event.event_date }}</div>
-                                <div>📍 {{ event.location }}</div>
-                            </div>
-                            <p class="event-description">{{ event.description }}</p>
-                            <a href="{% url 'public_event_detail' event.pk %}" class="view-details-btn">VIEW DETAILS</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="no-events">
-                <h2>No upcoming events found.</h2>
-                <p>Check back later or explore our <a href="{% url 'public_gallery' %}" style="color: #0A1A4A; font-weight: 600;">Gallery</a> to see our past activities.</p>
-                {% if search_query %}
-                    <a href="{% url 'public_events' %}" class="pill-button" style="margin-top: 1rem;">View All Events</a>
+        <div class="events-grid">
+            {% for event in events %}
+            <div class="event-card">
+                {% if event.image %}
+                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="event-image" loading="lazy">
+                {% else %}
+                <img src="{% static 'images/background.png' %}" alt="{{ event.name }}" class="event-image" loading="lazy">
                 {% endif %}
+                <div class="event-info">
+                    <span class="event-status status-{{ event.status }}">
+                        {{ event.get_status_display }}
+                    </span>
+                    <h3>{{ event.name }}</h3>
+                    <div class="event-meta">
+                        <div>📅 {{ event.event_date }}</div>
+                        <div>📍 {{ event.location }}</div>
+                    </div>
+                    <p class="event-description">{{ event.description }}</p>
+                    <a href="{% url 'public_event_detail' event.pk %}" class="view-details-btn">VIEW DETAILS</a>
+                </div>
             </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-events">
+            <h2>No upcoming events found.</h2>
+            <p>Check back later or explore our <a href="{% url 'public_gallery' %}"
+                    style="color: #0A1A4A; font-weight: 600;">Gallery</a> to see our past activities.</p>
+            {% if search_query %}
+            <a href="{% url 'public_events' %}" class="pill-button" style="margin-top: 1rem;">View All Events</a>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
 
@@ -285,7 +296,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <img src="{% static 'images/logos/location_logo.png' %}" alt="Pehchan Location"
-                        style="height: 80px; margin-bottom: 0.5rem;">
+                        style="height: 80px; margin-bottom: 0.5rem;" loading="lazy">
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -307,7 +318,7 @@
         </div>
     </footer>
     <div class="footer-bottom">
-        <p>Copyright © Pehchan-Your Unique Identity. All rights reserved.</p>
+        <p>Copyright © Pehchan YUI Foundation. All rights reserved.</p>
     </div>
 
     <script src="{% static 'js/script.js' %}"></script>

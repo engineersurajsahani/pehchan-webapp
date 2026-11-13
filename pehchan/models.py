@@ -1,9 +1,23 @@
 from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.core.validators import EmailValidator, RegexValidator
+from django.core.validators import EmailValidator, RegexValidator, FileExtensionValidator
+from django.core.exceptions import ValidationError
 from decimal import Decimal
 from datetime import date
+
+
+def validate_receipt_file(file):
+    """Validate uploaded receipt file type and size (max 5MB)"""
+    max_size_mb = 5
+    if file.size > max_size_mb * 1024 * 1024:
+        raise ValidationError(f"File size must not exceed {max_size_mb} MB.")
+    
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.webp', '.pdf']
+    import os
+    ext = os.path.splitext(file.name)[1].lower()
+    if ext not in valid_extensions:
+        raise ValidationError(f"Unsupported file extension: {ext}. Allowed: JPG, PNG, WEBP, PDF.")
 
 
 class Event(models.Model):
@@ -68,8 +82,8 @@ class EventVolunteer(models.Model):
     ]
     
     phone_regex = RegexValidator(
-        regex=r'^\d{10}$',
-        message="Contact number must be exactly 10 digits."
+        regex=r'^[6-9]\d{9}$',
+        message="Contact number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
     )
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='event_volunteers')
@@ -96,8 +110,8 @@ class LifetimeVolunteer(models.Model):
     ]
     
     phone_regex = RegexValidator(
-        regex=r'^\d{10}$',
-        message="Contact number must be exactly 10 digits."
+        regex=r'^[6-9]\d{9}$',
+        message="Contact number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
     )
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='lifetime_volunteer')
@@ -210,8 +224,8 @@ class MoneyDonation(models.Model):
     ]
     
     phone_regex = RegexValidator(
-        regex=r'^\d{10}$',
-        message="Contact number must be exactly 10 digits."
+        regex=r'^[6-9]\d{9}$',
+        message="Contact number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
     )
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='money_donations')
@@ -220,7 +234,7 @@ class MoneyDonation(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='upi')
     upi_id = models.CharField(max_length=100, blank=True)
     contact_number = models.CharField(max_length=10, validators=[phone_regex], default='0000000000')
-    receipt_upload = models.FileField(upload_to='receipts/', blank=True, null=True)
+    receipt_upload = models.FileField(upload_to='receipts/', blank=True, null=True, validators=[validate_receipt_file])
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unverified', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     
@@ -320,7 +334,7 @@ class AnonymousDonation(models.Model):
     donor_phone = models.CharField(max_length=20, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
-    receipt = models.FileField(upload_to='anonymous_donation_receipts/', blank=True, null=True)
+    receipt = models.FileField(upload_to='anonymous_donation_receipts/', blank=True, null=True, validators=[validate_receipt_file])
     wants_receipt = models.BooleanField(default=False)
     message = models.TextField(blank=True, null=True)
     google_form_submitted = models.BooleanField(default=False)
